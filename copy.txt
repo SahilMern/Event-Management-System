@@ -14,3 +14,15 @@ function App() {
 }
 
 export default App;
+
+
+
+const Home = () => {
+  return (
+    <div>Home</div>
+  )
+}
+
+export default Home
+agar user login  nahi hai to yaha se usse mujhe login to usse login page par redirect karna hai 
+

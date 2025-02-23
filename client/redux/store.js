@@ -18,7 +18,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ["persist/PERSIST"], // ❌ Persist ki warnings hata dega
+        ignoredActions: ["persist/PERSIST"], 
       },
     }),
 });

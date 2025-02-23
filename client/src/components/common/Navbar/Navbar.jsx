@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
 import {
-  FaUser,
-  FaUserPlus,
   FaSignOutAlt,
-  FaTachometerAlt,
+  // FaTachometerAlt,
 } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../../redux/slice/AuthSlice";
@@ -17,12 +15,12 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-lg fixed w-full z-10">
+    <nav className="bg-white shadow ">
       <div className="container mx-auto px-24 py-6">
         <div className="flex justify-between items-center">
           {/* Logo and Event Name */}
           <Link to="/" className="flex items-center space-x-2">
-            <img src={"./event.png"} alt="Event Logo" className="h-10 w-10" />{" "}
+            <img src={"./event.png"} alt="Event Logo" className="h-10 w-10" />
             {/* Logo Image */}
             <span className="text-2xl font-bold text-gray-800 hover:text-gray-600">
               Event
@@ -31,33 +29,26 @@ const Navbar = () => {
 
           {/* Nav Links */}
           <div className="hidden md:flex space-x-8 items-center">
-            {user && (
-              <>
-                <Link
-                  to="/"
-                  className="text-gray-700 hover:text-blue-500 transition duration-300"
-                >
-                  Home
-                </Link>
-                {user.role === "admin" && (
-                  <Link
-                    to="/dashboard"
-                    className="text-gray-700 hover:text-blue-500 transition duration-300 flex items-center"
-                  >
-                    <FaTachometerAlt className="mr-2" /> Dashboard
-                  </Link>
-                )}
-              </>
-            )}
+            <Link
+              to="/"
+              className="text-black hover:text-gray-700 transition duration-300 text-base uppercase "
+              style={{ fontSize: "1.1rem" }}
+            >
+              Home
+            </Link>
+
             <Link
               to="/about"
-              className="text-gray-700 hover:text-blue-500 transition duration-300"
+              className="text-black hover:text-gray-700 transition duration-300 text-base uppercase"
+              style={{ fontSize: "1.1rem" }}
             >
               About Us
             </Link>
+
             <Link
               to="/contact"
-              className="text-gray-700 hover:text-blue-500 transition duration-300"
+              className="text-black hover:text-gray-700 transition duration-300 text-base uppercase"
+              style={{ fontSize: "1.1rem" }}
             >
               Contact Us
             </Link>
@@ -66,12 +57,25 @@ const Navbar = () => {
           {/* Auth Buttons */}
           <div className="flex items-center space-x-4">
             {user ? (
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300 flex items-center"
-              >
-                <FaSignOutAlt className="mr-2" /> Logout
-              </button>
+              <>
+                {/* Dashboard Button */}
+                {user.role === "admin" && (
+                  <Link
+                    to="/admin"
+                    className="text-gray-700 hover:text-blue-500 transition duration-300 text-base uppercase"
+                  >
+                    Dashboard
+                  </Link>
+                )}
+
+                {/* Logout Button */}
+                <button
+                  onClick={handleLogout}
+                  className="bg-black text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300 flex items-center"
+                >
+                  <FaSignOutAlt className="mr-2" /> Logout
+                </button>
+              </>
             ) : (
               <>
                 <Link

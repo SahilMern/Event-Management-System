@@ -67,15 +67,15 @@ const login = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    // ✅ Secure HTTP-only Cookie Set karna
+    // ✅ Set HTTP-only cookie
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 24 * 60 * 60 * 1000,
+      httpOnly: true, // Prevents client-side JS from accessing the cookie
+      secure: process.env.NODE_ENV === "production", // Ensures cookie is only sent over HTTPS in production
+      sameSite: "strict", // Prevents CSRF attacks
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
 
-    // Send token in response body for Redux storage
+    // Send success response
     return res.json({
       success: true,
       message: "Login successful",
@@ -85,7 +85,6 @@ const login = async (req, res) => {
         email: user.email,
         role: user.role,
       },
-      token: token, // Send token in response body
     });
   } catch (error) {
     console.error(error);

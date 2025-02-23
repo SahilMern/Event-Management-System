@@ -24,7 +24,8 @@ const Login = () => {
         loginSuccess({ user: response.data.user, token: response.data.token })
       ); // Save in Redux
       toast.success("Login Successful! Redirecting...");
-      setTimeout(() => navigate("/"), 2000);
+      // setTimeout(() => navigate("/"), 2000);
+      navigate("/")
     } catch (err) {
       toast.error(err.response?.data?.message || "Invalid credentials");
     }

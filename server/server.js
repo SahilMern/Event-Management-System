@@ -241,6 +241,13 @@ app.delete("/api/events/:id", async (req, res) => {
 
 // Start the server
 
-import authRoutes from "./routes/Auth.Routes.js";
-app.use("/api/auth", authRoutes)
+
+import {AuthRoutes, UserRoutes,EventRoutes} from "./routes/index.js"
+app.use("/api/auth", AuthRoutes)
+app.use("/api/user", UserRoutes)
+app.use("/api/events", EventRoutes)
+
+
+
+
 app.listen(PORT, () => console.log(`🚀 Server is running on port ${PORT}!`));
