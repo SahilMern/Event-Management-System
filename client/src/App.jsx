@@ -9,6 +9,8 @@ import AddEvent from "./components/admin/AddEvent/AddEvent";
 import EditEvent from "./components/admin/EditEvent/EditEvent";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Admin from "./components/admin/Admin";
+import NotFound from "./pages/NotFound";
+import Home from "./pages/Home";
 
 const App = () => {
   return (
@@ -17,9 +19,13 @@ const App = () => {
       <div className="min-div">
         <Routes>
           {/* Public Routes */}
+
+          <Route path="/" element={<Home />} />
+
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/under" element={<Under />} />
+          <Route path="/event" element={<Event />} />
 
           {/* Protected Routes for Admin */}
           <Route element={<ProtectedRoute roles={["admin"]} />}>
@@ -28,8 +34,8 @@ const App = () => {
             <Route path="/edit-event/:id" element={<EditEvent />} />
           </Route>
 
-          {/* Public Event Route */}
-          <Route path="/event" element={<Event />} />
+          {/* 404 Page for Unmatched Routes */}
+          <Route path="/*" element={<NotFound />} />
         </Routes>
       </div>
       <Footer />
