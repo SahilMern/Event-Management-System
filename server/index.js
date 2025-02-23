@@ -166,3 +166,63 @@ router.get("/", getEvents);
 router.put("/:id", protect, admin, updateEvent);
 router.delete("/:id", protect, admin, deleteEvent);
 module.exports = router;
+
+
+const express = require('express');
+const multer = require('multer');
+const Event = require('./models/Event'); // Import the Event model
+const app = express();
+
+// Middleware to parse form data and handle file uploads
+const upload = multer({ dest: 'uploads/' });
+
+app.post(
+  '/api/events',
+  upload.fields([{ name: 'eventFile' }, { name: 'attendeeFile' }]),
+  async (req, res) => {
+    try {
+      const { eventName, eventDate, eventType, eventLink } = req.body;
+      const eventFile = req.files.eventFile ? req.files.eventFile[0].path : null;
+      const attendeeFile = req.files.attendeeFile ? req.files.attendeeFile[0].path : null;
+
+      // Basic validation: Check if all fields are present
+      if (!eventName || !eventDate || !eventType || !eventFile || !attendeeFile) {
+        return res.status(400).json({ error: 'All fields are required.' });
+      }
+
+      // File type validation based on eventType (image/video)
+      if (eventType === 'image' && !eventFile.match(/\.(jpg|jpeg|png)$/)) {
+        return res.status(400).json({ error: 'Only image files are allowed for this event type.' });
+      }
+
+      if (eventType === 'video' && !eventFile.match(/\.(mp4|avi|mov)$/)) {
+        return res.status(400).json({ error: 'Only video files are allowed for this event type.' });
+      }
+
+      // Create a new event document and save it to the database
+      const newEvent = new Event({
+        eventName,
+        eventDate,
+        eventType,
+        eventFile,
+        attendeeFile,
+        eventLink,
+      });
+
+      // Save event to the database
+      await newEvent.save();
+
+      // Return success response
+      return res.status(200).json({ message: 'Event successfully added', event: newEvent });
+    } catch (error) {
+      console.error('Error saving event:', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+);
+
+// Your server setup (example)
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
