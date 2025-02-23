@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+
 const Event = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,7 +29,7 @@ const Event = () => {
 
       const data = await response.json();
       setEvents(data.events);
-      setTotalPages(data.totalPages);
+      setTotalPages(data.totalPages); // Ensure this is updated
     } catch (error) {
       setError(error.message);
     } finally {
@@ -54,18 +55,13 @@ const Event = () => {
   };
 
   const handleDelete = async (eventId) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this event?"
-    );
+    const confirmDelete = window.confirm("Are you sure you want to delete this event?");
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(
-        `http://localhost:9080/api/events/${eventId}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`http://localhost:9080/api/events/${eventId}`, {
+        method: "DELETE",
+      });
 
       if (!response.ok) {
         throw new Error("Failed to delete the event");
@@ -78,9 +74,7 @@ const Event = () => {
   };
 
   if (loading) {
-    return (
-      <div className="text-center text-lg font-semibold">Loading events...</div>
-    );
+    return <div className="text-center text-lg font-semibold">Loading events...</div>;
   }
 
   return (
@@ -109,12 +103,12 @@ const Event = () => {
             onChange={(e) => setEndDate(e.target.value)}
             className="p-2 border border-gray-300 rounded"
           />
-          <button
+          {/* <button
             type="submit"
             className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
           >
             Search
-          </button>
+          </button> */}
           <button
             type="button"
             onClick={handleReset}
@@ -128,10 +122,7 @@ const Event = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {events.length > 0 ? (
           events.map((event, index) => (
-            <div
-              key={index}
-              className="bg-white shadow-lg rounded-lg overflow-hidden"
-            >
+            <div key={index} className="bg-white shadow-lg rounded-lg overflow-hidden">
               <div className="relative">
                 {event.eventType === "image" && (
                   <img
@@ -150,11 +141,7 @@ const Event = () => {
                     </video>
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="bg-black bg-opacity-50 rounded-full p-3">
-                        <svg
-                          className="w-10 h-10 text-white"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
+                        <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M4 4l12 6-12 6V4z" />
                         </svg>
                       </div>
@@ -163,21 +150,16 @@ const Event = () => {
                 )}
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2">
-                  {event.eventName}
-                </h3>
+                <h3 className="text-xl font-semibold mb-2">{event.eventName}</h3>
                 <p className="text-gray-700">
-                  <strong>Date:</strong>{" "}
-                  {new Date(event.eventDate).toLocaleDateString()}
+                  <strong>Date:</strong> {new Date(event.eventDate).toLocaleDateString()}
                 </p>
                 <p className="text-gray-700">
                   <strong>Attendees:</strong> {event.attendees}
                 </p>
                 <div className="flex space-x-4 mt-4">
                   <button
-                    onClick={() =>
-                      navigate(`/edit-event/${event._id}`, { state: event })
-                    }
+                    onClick={() => navigate(`/edit-event/${event._id}`, { state: event })}
                     className="text-blue-500 hover:underline"
                   >
                     Edit
@@ -205,12 +187,23 @@ const Event = () => {
         >
           Previous
         </button>
-        <span className="mx-2 p-2">
-          Page {page} of {totalPages}
-        </span>
+
+        {/* Display page numbers */}
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index + 1}
+            onClick={() => setPage(index + 1)}
+            className={`mx-1 p-2 ${
+              page === index + 1 ? "bg-blue-700" : "bg-blue-500"
+            } text-white rounded`}
+          >
+            {index + 1}
+          </button>
+        ))}
+
         <button
           onClick={() => setPage((prev) => prev + 1)}
-          disabled={page === totalPages}
+          disabled={page === totalPages || totalPages === 0}
           className="mx-2 p-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
         >
           Next

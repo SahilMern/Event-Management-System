@@ -120,22 +120,16 @@ app.post(
 app.get("/api/getEvent", async (req, res) => {
   const { search, startDate, endDate, page = 1, limit = 3 } = req.query;
 
-  // Debugging: Log the query parameters
-  console.log("Query Parameters:", { search, startDate, endDate, page, limit });
-
   const query = {};
 
-  // Add search filter
   if (search) {
     query.eventName = { $regex: search, $options: "i" };
   }
 
-  // Add date range filter
   if (startDate && endDate) {
     const start = new Date(startDate);
     const end = new Date(endDate);
 
-    // Validate dates
     if (isNaN(start.getTime())) {
       return res.status(400).json({ error: "Invalid startDate format." });
     }
@@ -150,25 +144,20 @@ app.get("/api/getEvent", async (req, res) => {
   }
 
   try {
-    // Convert page and limit to numbers
     const pageNumber = parseInt(page);
-    const limitNumber = Math.min(Math.max(parseInt(limit), 1), 100); // Ensure limit is between 1 and 100
+    const limitNumber = Math.min(Math.max(parseInt(limit), 1), 100);
 
-    // Fetch events with pagination and sorting
+    const totalEvents = await Eventss.countDocuments(query);
+    const totalPages = Math.ceil(totalEvents / limitNumber);
+
     const events = await Eventss.find(query)
-      .sort({ eventDate: -1 }) // Sort by eventDate in descending order
+      .sort({ eventDate: -1 })
       .skip((pageNumber - 1) * limitNumber)
       .limit(limitNumber);
 
-    // Get total count of events for pagination
-    const totalEvents = await Eventss.countDocuments(query);
-
-    // Debugging: Log the fetched events
-    console.log("Fetched Events:", events);
-
     res.json({
       events,
-      totalPages: Math.ceil(totalEvents / limitNumber),
+      totalPages,
       currentPage: pageNumber,
       totalEvents,
     });
@@ -177,6 +166,7 @@ app.get("/api/getEvent", async (req, res) => {
     res.status(500).json({ error: "Internal server error while fetching events." });
   }
 });
+
 
 
 app.get("/api/events/:id", async (req, res) => {
@@ -250,4 +240,7 @@ app.delete("/api/events/:id", async (req, res) => {
 
 
 // Start the server
+
+import authRoutes from "./routes/Auth.Routes.js";
+app.use("/api/auth", authRoutes)
 app.listen(PORT, () => console.log(`🚀 Server is running on port ${PORT}!`));

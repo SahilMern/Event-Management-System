@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken"
 //TODO:- User Register function
 const register = async (req, res) => {
   const { name, email, password } = req.body;
+  console.log(name, email, password);
+  
   try {
     if (!name || !email || !password) {
       return res
@@ -58,21 +60,22 @@ const login = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Invalid credentials" });
 
-    // JWT Token Generate 
+    // JWT Token Generate
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
-    // ✅ Secure HTTP-only Cookie Set karna 
+    // ✅ Secure HTTP-only Cookie Set karna
     res.cookie("token", token, {
-      httpOnly: true, // Security ke liye (client-side JS access nahi kar sakta)
-      secure: process.env.NODE_ENV === "production", // HTTPS ke liye (prod mode me true)
-      sameSite: "strict", // CSRF attack se bachne ke liye
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
+    // Send token in response body for Redux storage
     return res.json({
       success: true,
       message: "Login successful",
@@ -82,6 +85,7 @@ const login = async (req, res) => {
         email: user.email,
         role: user.role,
       },
+      token: token, // Send token in response body
     });
   } catch (error) {
     console.error(error);
