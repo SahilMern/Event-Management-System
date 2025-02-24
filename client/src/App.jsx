@@ -28,7 +28,7 @@ const App = () => {
 
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/under" element={<AddEvent />} />
+          {/* <Route path="/under" element={<AddEvent />} /> */}
 
           {/* <Route path="/event" element={<Event />} /> */}
 
@@ -47,6 +47,8 @@ const App = () => {
 
           {/* 404 Page for Unmatched Routes */}
           <Route path="/*" element={<NotFound />} />
+          <Route path="/under" element={<Under />} />
+
         </Routes>
       </div>
       <Footer />

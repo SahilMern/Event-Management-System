@@ -19,7 +19,12 @@ const PORT = process.env.PORT || 9080;
 
 // Middlewares
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5174", // Replace with your frontend port
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 
 // Multer storage configuration

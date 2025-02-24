@@ -1,16 +1,16 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { login } from "../helper/backend/backend";
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import { loginSuccess } from "../../redux/slice/AuthSlice";
+import { login } from "../helper/backend/backend.js";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
-  const dispatch = useDispatch(); // Redux dispatcher
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,13 +19,22 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(login, formData);
+      const response = await axios.post(login, formData, {
+        withCredentials: true, // Include cookies in the request
+      });
+
+      // Dispatch login success action
       dispatch(
         loginSuccess({ user: response.data.user, token: response.data.token })
-      ); // Save in Redux
+      );
+
+      // Show success message
       toast.success("Login Successful! Redirecting...");
+
+      // Redirect to home page
       navigate("/");
     } catch (err) {
+      // Show error message
       toast.error(err.response?.data?.message || "Invalid credentials");
     }
   };
@@ -48,7 +57,7 @@ const Login = () => {
               required
             />
           </div>
-          
+
           <div className="flex flex-col">
             <label htmlFor="password" className="text-sm text-gray-600 mb-2">Password</label>
             <input

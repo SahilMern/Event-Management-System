@@ -1,12 +1,12 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
 //TODO:- User Register function
 const register = async (req, res) => {
   const { name, email, password } = req.body;
   console.log(name, email, password);
-  
+
   try {
     if (!name || !email || !password) {
       return res
@@ -67,11 +67,10 @@ const login = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    // ✅ Set HTTP-only cookie
     res.cookie("token", token, {
       httpOnly: true, // Prevents client-side JS from accessing the cookie
-      secure: process.env.NODE_ENV === "production", // Ensures cookie is only sent over HTTPS in production
-      sameSite: "strict", // Prevents CSRF attacks
+      secure: process.env.NODE_ENV === "production", // HTTPS in production
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax", // Adjust for development
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
 
@@ -91,6 +90,5 @@ const login = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
 
 export { register, login };
