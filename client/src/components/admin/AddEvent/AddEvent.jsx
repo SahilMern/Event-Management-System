@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Event = () => {
+const AddEvent = () => {
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventType, setEventType] = useState("image");
@@ -167,4 +167,4 @@ const Event = () => {
   );
 };
 
-export default Event;
+export default AddEvent;

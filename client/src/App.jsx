@@ -39,7 +39,7 @@ const App = () => {
               <Route path="users" element={<Users />} />
               <Route path="events" element={<Event />} />
 
-              <Route path="add-event" element={<AddEvent />} />
+              <Route path="addevent" element={<AddEvent />} />
               <Route path="edit-event/:id" element={<EditEvent />} />
               {/* <Route path="edit-event/:id" element={<EditEvent />} /> New Route */}
             </Route>

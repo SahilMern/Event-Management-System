@@ -89,6 +89,10 @@ const Event = () => {
     }
   };
 
+
+  const handleAddEvents = () => {
+    navigate("/admin/addevent")
+  }
   if (loading) {
     return (
       <div className="text-center text-lg font-semibold">Loading events...</div>
@@ -129,6 +133,10 @@ const Event = () => {
             className="bg-gray-500 text-white p-2 rounded hover:bg-gray-600 text-sm sm:text-base"
           >
             Reset
+          </button>
+
+          <button className="bg-black rounded-sm text-white p-2" onClick={handleAddEvents} >
+          Add Events
           </button>
         </div>
       </form>
@@ -244,6 +252,7 @@ const Event = () => {
           </button>
         </div>
       )}
+
     </div>
   );
 };
