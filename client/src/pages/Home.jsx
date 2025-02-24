@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth); // Get user from Redux store
+  const { user } = useSelector((state) => state.auth);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,7 +14,6 @@ const Home = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Fetch events from the API
   const fetchEvents = async () => {
     try {
       const queryParams = new URLSearchParams({
@@ -24,7 +23,9 @@ const Home = () => {
         page,
       }).toString();
 
-      const response = await fetch(`http://localhost:9080/api/getEvent?${queryParams}`);
+      const response = await fetch(
+        `http://localhost:9080/api/getEvent?${queryParams}`
+      );
 
       if (!response.ok) {
         throw new Error("Error fetching events.");
@@ -40,28 +41,24 @@ const Home = () => {
     }
   };
 
-  // Fetch events on component mount or when search/filters change
   useEffect(() => {
     if (user) {
       fetchEvents();
     }
   }, [search, startDate, endDate, page, user]);
 
-  // Redirect to login if user is not authenticated
   useEffect(() => {
     if (!user) {
       navigate("/login");
     }
   }, [user, navigate]);
 
-  // Handle search form submission
   const handleSearch = (e) => {
     e.preventDefault();
-    setPage(1); // Reset to the first page when searching
+    setPage(1);
     fetchEvents();
   };
 
-  // Reset search and filters
   const handleReset = () => {
     setSearch("");
     setStartDate("");
@@ -69,42 +66,53 @@ const Home = () => {
     setPage(1);
   };
 
+  const handleCardClick = (eventId) => {
+    navigate(`/eventDetails/${eventId}`); // Navigate to event details page with the event ID
+  };
+
   if (loading) {
-    return <div className="text-center text-lg font-semibold">Loading events...</div>;
+    return (
+      <div className="text-center text-lg font-semibold text-gray-600">
+        Loading events...
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-[80vh] p-4 sm:p-8 bg-gray-50 flex flex-col">
-      <h1 className="text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-8 text-gray-800">
-        Featured Articles
+    <div className="min-h-screen bg-gray-50 flex flex-col px-4 sm:px-8 py-8 mt-8">
+      <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">
+        Featured Events
       </h1>
 
       {/* Search and Filter Form */}
-      <form onSubmit={handleSearch} className="mb-6 sm:mb-8 max-w-4xl mx-auto">
-        <div className="flex flex-wrap gap-4">
+      <form
+        onSubmit={handleSearch}
+        className="mb-8 max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-md"
+      >
+        <div className="flex flex-wrap gap-4 justify-between">
           <input
             type="text"
             placeholder="Search by event name"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 p-2 border border-gray-300 rounded text-sm sm:text-base"
+            className="flex-1 p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
           />
           <input
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="p-2 border border-gray-300 rounded text-sm sm:text-base"
+            className="p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
           />
           <input
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="p-2 border border-gray-300 rounded text-sm sm:text-base"
+            className="p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
           />
           <button
             type="button"
             onClick={handleReset}
-            className="bg-gray-500 text-white p-2 rounded hover:bg-gray-600 text-sm sm:text-base"
+            className="bg-black text-white p-3 rounded-md hover:bg-gray-600 transition duration-200 text-sm w-[8rem]"
           >
             Reset
           </button>
@@ -112,84 +120,91 @@ const Home = () => {
       </form>
 
       {/* Event Cards */}
-      <div className="flex-1">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {events.length > 0 ? (
-            events.map((event, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-              >
-                <div className="relative">
-                  {event.eventType === "image" && (
-                    <img
-                      src={`http://localhost:9080/${event.eventFile}`}
-                      alt={event.eventName}
-                      className="w-full h-48 sm:h-56 object-cover"
-                    />
-                  )}
-                  {event.eventType === "video" && (
-                    <div className="relative h-48 sm:h-56">
-                      <video
-                        controls // Add controls for play/pause
-                        muted // Mute the video to prevent auto-play
-                        className="w-full h-full object-cover"
-                      >
-                        <source
-                          src={`http://localhost:9080/${event.eventFile}`}
-                          type="video/mp4"
-                        />
-                        Your browser does not support the video tag.
-                      </video>
-                    </div>
-                  )}
-                </div>
-                <div className="p-4 sm:p-6">
-                  <h2 className="text-xl sm:text-2xl font-bold mb-2 text-gray-800">
-                    {event.eventName}
-                  </h2>
-                  <p className="text-gray-600 mb-4 text-sm sm:text-base">
-                    <strong>Date:</strong> {new Date(event.eventDate).toLocaleDateString()}
-                  </p>
-                  <p className="text-gray-600 mb-4 text-sm sm:text-base">
-                    <strong>Attendees:</strong> {event.attendees}
-                  </p>
-                  <p className="text-gray-600 text-sm sm:text-base">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                    eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+        {events.length > 0 ? (
+          events.map((event, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+              onClick={() => handleCardClick(event._id)} // Use event ID to navigate
+            >
+              <div className="relative">
+                {event.eventType === "image" && (
+                  <img
+                    src={`http://localhost:9080/${event.eventFile}`}
+                    alt={event.eventName}
+                    className="w-full h-40 sm:h-48 object-cover"
+                  />
+                )}
+                {event.eventType === "video" && (
+                  <div className="relative h-40 sm:h-48">
+                    <video
+                      controls
+                      muted
+                      className="w-full h-full object-cover"
+                    >
+                      <source
+                        src={`http://localhost:9080/${event.eventFile}`}
+                        type="video/mp4"
+                      />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                )}
+              </div>
+              <div className="p-4">
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">
+                  {event.eventName}
+                </h2>
+                <p className="text-gray-600 text-sm sm:text-base mb-3">
+                  <strong>Date:</strong>{" "}
+                  {new Date(event.eventDate).toLocaleDateString()}
+                </p>
+                <p className="text-gray-600 text-sm sm:text-base mb-3">
+                  <strong>Attendees:</strong> {event.attendees}
+                </p>
+                {/* Shorten the description with max height and ellipsis */}
+                <p className="text-gray-600 text-sm sm:text-base mb-4 line-clamp-2">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Curabitur pretium, felis vel suscipit elementum.
+                </p>
+                <div className="flex justify-between items-center mt-4">
+                  <button className="bg-black text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200">
+                    View Details
+                  </button>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className="col-span-3 flex justify-center items-center h-64">
-              <p className="text-center text-gray-600 text-lg">
-                No events found. Try adjusting your search or filters.
-              </p>
             </div>
-          )}
-        </div>
+          ))
+        ) : (
+          <div className="col-span-3 flex justify-center items-center h-64">
+            <p className="text-center text-gray-600 text-lg">
+              No events found. Try adjusting your search or filters.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Pagination */}
       {events.length > 0 && (
-        <div className="flex justify-center mt-6 sm:mt-8">
+        <div className="flex justify-center mt-8">
           <button
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
             disabled={page === 1}
-            className="mx-2 p-2 bg-black text-white rounded disabled:bg-gray-300 text-sm sm:text-base"
+            className="mx-2 p-3 bg-black text-white rounded-lg disabled:bg-gray-300 text-sm"
           >
             Previous
           </button>
 
-          {/* Display page numbers */}
+          {/* Page numbers */}
           {Array.from({ length: totalPages }, (_, index) => (
             <button
               key={index + 1}
               onClick={() => setPage(index + 1)}
-              className={`mx-1 p-2 ${
+              className={`mx-1 p-3 ${
                 page === index + 1 ? "bg-blue-500" : "bg-black"
-              } text-white rounded text-sm sm:text-base`}
+              } text-white rounded-lg text-sm`}
             >
               {index + 1}
             </button>
@@ -198,7 +213,7 @@ const Home = () => {
           <button
             onClick={() => setPage((prev) => prev + 1)}
             disabled={page === totalPages || totalPages === 0}
-            className="mx-2 p-2 bg-black text-white rounded disabled:bg-gray-300 text-sm sm:text-base"
+            className="mx-2 p-3 bg-black text-white rounded-lg disabled:bg-gray-300 text-sm"
           >
             Next
           </button>

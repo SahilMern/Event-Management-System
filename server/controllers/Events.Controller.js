@@ -23,10 +23,19 @@ export const createEvent = async (req, res) => {
     }
 
     // Create and save the new event
-    const newEvent = new Eventss({ eventName, eventDate, eventType, eventFile, attendeeFile, eventLink });
+    const newEvent = new Eventss({
+      eventName,
+      eventDate,
+      eventType,
+      eventFile,
+      attendeeFile,
+      eventLink,
+    });
     await newEvent.save();
 
-    return res.status(200).json({ message: "Event successfully added", event: newEvent });
+    return res
+      .status(200)
+      .json({ message: "Event successfully added", event: newEvent });
   } catch (error) {
     console.error("Error saving event:", error);
     return res.status(500).json({ error: "Internal server error" });
@@ -35,8 +44,8 @@ export const createEvent = async (req, res) => {
 
 // Get all events with pagination, search, and date filtering
 export const getAllEvents = async (req, res) => {
-    console.log("heye");
-    
+  console.log("heye");
+
   const { search, startDate, endDate, page = 1, limit = 3 } = req.query;
 
   const query = {};
@@ -84,7 +93,9 @@ export const getAllEvents = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching events:", error);
-    return res.status(500).json({ error: "Internal server error while fetching events." });
+    return res
+      .status(500)
+      .json({ error: "Internal server error while fetching events." });
   }
 };
 
@@ -115,11 +126,18 @@ export const updateEvent = async (req, res) => {
     }
 
     // Update the event in the database
-    const updatedEvent = await Eventss.findByIdAndUpdate(req.params.id, updatedData, { new: true });
+    const updatedEvent = await Eventss.findByIdAndUpdate(
+      req.params.id,
+      updatedData,
+      { new: true }
+    );
 
-    if (!updatedEvent) return res.status(404).json({ error: "Event not found" });
+    if (!updatedEvent)
+      return res.status(404).json({ error: "Event not found" });
 
-    return res.status(200).json({ message: "Event updated successfully!", event: updatedEvent });
+    return res
+      .status(200)
+      .json({ message: "Event updated successfully!", event: updatedEvent });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Error updating event." });
@@ -128,6 +146,7 @@ export const updateEvent = async (req, res) => {
 
 // Delete an event by ID
 export const deleteEvent = async (req, res) => {
+  console.log("hey"); // Debugging
   try {
     const eventId = req.params.id;
 

@@ -1,8 +1,5 @@
 import { Link } from "react-router-dom";
-import {
-  FaSignOutAlt,
-  // FaTachometerAlt,
-} from "react-icons/fa";
+import { FaSignOutAlt } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../../redux/slice/AuthSlice";
 
@@ -15,14 +12,14 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow ">
-      <div className="container mx-auto px-24 py-6">
+    <nav className="bg-white shadow-md  w-full z-10 top-0 left-0">
+      <div className="container mx-auto px-6 py-4 md:px-12 md:py-6">
         <div className="flex justify-between items-center">
           {/* Logo and Event Name */}
           <Link to="/" className="flex items-center space-x-2">
-            <img src={"./event.png"} alt="Event Logo" className="h-10 w-10" />
+            <img src={"./event.png"} alt="Event Logo" className="h-12 w-12" />
             {/* Logo Image */}
-            <span className="text-2xl font-bold text-gray-800 hover:text-gray-600">
+            <span className="text-3xl font-semibold text-gray-800 hover:text-blue-600 transition duration-300">
               Event
             </span>
           </Link>
@@ -31,38 +28,35 @@ const Navbar = () => {
           <div className="hidden md:flex space-x-8 items-center">
             <Link
               to="/"
-              className="text-black hover:text-gray-700 transition duration-300 text-base uppercase "
-              style={{ fontSize: "1.1rem" }}
+              className="text-gray-800 hover:text-blue-600 transition duration-300 text-lg uppercase font-medium"
             >
               Home
             </Link>
 
             <Link
               to="/about"
-              className="text-black hover:text-gray-700 transition duration-300 text-base uppercase"
-              style={{ fontSize: "1.1rem" }}
+              className="text-gray-800 hover:text-blue-600 transition duration-300 text-lg uppercase font-medium"
             >
               About Us
             </Link>
 
             <Link
               to="/contact"
-              className="text-black hover:text-gray-700 transition duration-300 text-base uppercase"
-              style={{ fontSize: "1.1rem" }}
+              className="text-gray-800 hover:text-blue-600 transition duration-300 text-lg uppercase font-medium"
             >
               Contact Us
             </Link>
           </div>
 
           {/* Auth Buttons */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-6">
             {user ? (
               <>
                 {/* Dashboard Button */}
                 {user.role === "admin" && (
                   <Link
                     to="/admin"
-                    className="text-gray-700 hover:text-blue-500 transition duration-300 text-base uppercase"
+                    className="text-gray-800 hover:text-blue-600 transition duration-300 text-lg font-medium"
                   >
                     Dashboard
                   </Link>
@@ -71,7 +65,7 @@ const Navbar = () => {
                 {/* Logout Button */}
                 <button
                   onClick={handleLogout}
-                  className="bg-black text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300 flex items-center"
+                  className="cursor-pointer bg-[#f73d3d] text-white px-5 py-2 rounded-lg hover:bg-[#f73d3dd9] transition duration-300 flex items-center"
                 >
                   <FaSignOutAlt className="mr-2" /> Logout
                 </button>
@@ -80,13 +74,13 @@ const Navbar = () => {
               <>
                 <Link
                   to="/login"
-                  className="inline-block px-4 py-2 bg-black text-white rounded-lg hover:bg-blue-600 transition duration-300"
+                  className="inline-block px-5 py-2 bg-black text-white rounded-lg hover:bg-blue-600 transition duration-300 text-lg font-medium"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="inline-block px-4 py-2 bg-black text-white rounded-lg hover:bg-blue-600 transition duration-300"
+                  className="inline-block px-5 py-2 bg-black text-white rounded-lg hover:bg-blue-600 transition duration-300 text-lg font-medium"
                 >
                   Register
                 </Link>

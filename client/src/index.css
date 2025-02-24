@@ -5,17 +5,7 @@ body {
   font-family: 'Poppins', sans-serif;
   background-color: white;
 }
-/* body{
-  background-color: #eee;
-}
-input{
-  outline: none;
-} */
- /* body{
-  min-height: 80vh;
-  border: 1px solid yellow;
- } */
+
   .min-div{
-    /* border: 1px solid red; */
     min-height: 70vh;
   }

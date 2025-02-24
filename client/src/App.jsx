@@ -12,6 +12,8 @@ import Admin from "./components/admin/Admin";
 import NotFound from "./pages/NotFound";
 import Home from "./pages/Home";
 import Users from "./components/admin/pages/Users";
+import Event from "./components/admin/pages/Event";
+import EventDetails from "./pages/EventDetails";
 // import Event from "./components/admin/AddEvent/AddEvent";
 
 const App = () => {
@@ -22,9 +24,12 @@ const App = () => {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
+          <Route path="/eventDetails/:id" element={<EventDetails />} />
+
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/under" element={<Under />} />
+          <Route path="/under" element={<AddEvent />} />
+
           {/* <Route path="/event" element={<Event />} /> */}
 
           {/* Protected Routes for Admin */}
@@ -36,6 +41,7 @@ const App = () => {
 
               <Route path="add-event" element={<AddEvent />} />
               <Route path="edit-event/:id" element={<EditEvent />} />
+              {/* <Route path="edit-event/:id" element={<EditEvent />} /> New Route */}
             </Route>
           </Route>
 
