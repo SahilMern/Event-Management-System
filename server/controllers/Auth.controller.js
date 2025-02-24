@@ -91,4 +91,22 @@ const login = async (req, res) => {
   }
 };
 
-export { register, login };
+const logout = async (req, res) => {
+  try {
+    // Clear the token cookie
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+    });
+
+    // Send success response
+    return res
+      .status(200)
+      .json({ success: true, message: "Logout successful" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+export { register, login, logout };

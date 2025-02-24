@@ -12,7 +12,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md  w-full z-10 top-0 left-0">
+    <nav className="bg-white shadow-md w-full z-10 top-0 left-0">
       <div className="container mx-auto px-6 py-4 md:px-12 md:py-6">
         <div className="flex justify-between items-center">
           {/* Logo and Event Name */}

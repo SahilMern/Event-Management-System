@@ -188,32 +188,44 @@ const Home = () => {
 
       {/* Pagination */}
       {events.length > 0 && (
-        <div className="flex justify-center mt-8">
+        <div className="flex justify-center items-center mt-8 space-x-2">
+          {/* Previous Button */}
           <button
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
             disabled={page === 1}
-            className="mx-2 p-3 bg-black text-white rounded-lg disabled:bg-gray-300 text-sm"
+            className={`px-4 py-2 text-sm font-medium ${
+              page === 1
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-black text-white hover:bg-gray-800 transition duration-300"
+            } rounded-lg`}
           >
             Previous
           </button>
 
-          {/* Page numbers */}
+          {/* Page Numbers */}
           {Array.from({ length: totalPages }, (_, index) => (
             <button
               key={index + 1}
               onClick={() => setPage(index + 1)}
-              className={`mx-1 p-3 ${
-                page === index + 1 ? "bg-blue-500" : "bg-black"
-              } text-white rounded-lg text-sm`}
+              className={`px-4 py-2 text-sm font-medium ${
+                page === index + 1
+                  ? "bg-blue-500 text-white"
+                  : "bg-black text-white hover:bg-gray-800 transition duration-300"
+              } rounded-lg`}
             >
               {index + 1}
             </button>
           ))}
 
+          {/* Next Button */}
           <button
             onClick={() => setPage((prev) => prev + 1)}
             disabled={page === totalPages || totalPages === 0}
-            className="mx-2 p-3 bg-black text-white rounded-lg disabled:bg-gray-300 text-sm"
+            className={`px-4 py-2 text-sm font-medium ${
+              page === totalPages || totalPages === 0
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-black text-white hover:bg-gray-800 transition duration-300"
+            } rounded-lg`}
           >
             Next
           </button>

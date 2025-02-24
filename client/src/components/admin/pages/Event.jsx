@@ -24,6 +24,8 @@ const Event = () => {
         page,
       }).toString();
 
+      console.log(queryParams, "queryParams");
+
       const response = await fetch(
         `http://localhost:9080/api/getEvent?${queryParams}`
       );
@@ -33,6 +35,8 @@ const Event = () => {
       }
 
       const data = await response.json();
+      console.log(data, "data");
+
       setEvents(data.events);
       setTotalPages(data.totalPages);
     } catch (error) {
@@ -56,12 +60,12 @@ const Event = () => {
     }
   }, [user, navigate]);
 
-  // Handle search form submission
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setPage(1); // Reset to the first page when searching
-    fetchEvents();
-  };
+  //! NOT using Handle search form submission
+  // const handleSearch = (e) => {
+  //   e.preventDefault();
+  //   setPage(1); // Reset to the first page when searching
+  //   fetchEvents();
+  // };
 
   // Reset search and filters
   const handleReset = () => {
@@ -74,25 +78,27 @@ const Event = () => {
   // Handle event deletion
   const handleDelete = async (eventId) => {
     try {
-      const response = await fetch(`http://localhost:9080/api/events/${eventId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `http://localhost:9080/api/events/${eventId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Error deleting event.");
       }
 
-      // Refresh events list after deletion
       fetchEvents();
     } catch (error) {
       console.error("Error deleting event:", error);
     }
   };
 
-
   const handleAddEvents = () => {
-    navigate("/admin/addevent")
-  }
+    navigate("/admin/addevent");
+  };
+
   if (loading) {
     return (
       <div className="text-center text-lg font-semibold">Loading events...</div>
@@ -106,7 +112,8 @@ const Event = () => {
       </h1>
 
       {/* Search and Filter Form */}
-      <form onSubmit={handleSearch} className="mb-6 sm:mb-8 max-w-4xl mx-auto">
+      {/* onSubmit={handleSearch} */}
+      <form className="mb-6 sm:mb-8 w-full mx-auto">
         <div className="flex flex-wrap gap-4">
           <input
             type="text"
@@ -135,8 +142,11 @@ const Event = () => {
             Reset
           </button>
 
-          <button className="bg-black rounded-sm text-white p-2" onClick={handleAddEvents} >
-          Add Events
+          <button
+            className="bg-black rounded-sm text-white p-2"
+            onClick={handleAddEvents}
+          >
+            Add Events
           </button>
         </div>
       </form>
@@ -239,7 +249,7 @@ const Event = () => {
                 page === index + 1 ? "bg-blue-500" : "bg-black"
               } text-white rounded text-sm sm:text-base`}
             >
-              {index + 1}
+              {index + 1} 
             </button>
           ))}
 
@@ -252,7 +262,6 @@ const Event = () => {
           </button>
         </div>
       )}
-
     </div>
   );
 };

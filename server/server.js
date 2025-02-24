@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 9080;
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5174", // Replace with your frontend port
+    origin: "http://localhost:5173", // Replace with your frontend port
     credentials: true,
   })
 );
@@ -48,10 +48,18 @@ app.post(
   async (req, res) => {
     try {
       const { eventName, eventDate, eventType, eventLink } = req.body;
+      console.log(eventName, eventDate, eventType, eventLink, "Data aaa");
+
       const eventFile = req.files?.eventFile?.[0]?.path || null;
       const attendeeFile = req.files?.attendeeFile?.[0]?.path || null;
 
-      if (!eventName || !eventDate || !eventType || !eventFile || !attendeeFile) {
+      if (
+        !eventName ||
+        !eventDate ||
+        !eventType ||
+        !eventFile ||
+        !attendeeFile
+      ) {
         return res.status(400).json({ error: "All fields are required." });
       }
 
@@ -62,10 +70,19 @@ app.post(
         return res.status(400).json({ error: "Only video files are allowed." });
       }
 
-      const newEvent = new Eventss({ eventName, eventDate, eventType, eventFile, attendeeFile, eventLink });
+      const newEvent = new Eventss({
+        eventName,
+        eventDate,
+        eventType,
+        eventFile,
+        attendeeFile,
+        eventLink,
+      });
       await newEvent.save();
 
-      res.status(200).json({ message: "Event successfully added", event: newEvent });
+      res
+        .status(200)
+        .json({ message: "Event successfully added", event: newEvent });
     } catch (error) {
       console.error("Error saving event:", error);
       res.status(500).json({ error: "Internal server error" });
@@ -125,15 +142,20 @@ app.post(
 app.get("/api/getEvent", async (req, res) => {
   const { search, startDate, endDate, page = 1, limit = 3 } = req.query;
 
+  // console.log(search, startDate, endDate, "search, startDate, endDate");
+
   const query = {};
 
   if (search) {
     query.eventName = { $regex: search, $options: "i" };
+    console.log(query, "Query");
   }
 
   if (startDate && endDate) {
     const start = new Date(startDate);
     const end = new Date(endDate);
+
+    console.log(start, end, start.getTime());
 
     if (isNaN(start.getTime())) {
       return res.status(400).json({ error: "Invalid startDate format." });
@@ -146,21 +168,31 @@ app.get("/api/getEvent", async (req, res) => {
       $gte: start,
       $lte: end,
     };
+
+    console.log(query);
   }
 
   try {
     const pageNumber = parseInt(page);
     const limitNumber = Math.min(Math.max(parseInt(limit), 1), 100);
+    console.log(pageNumber, limitNumber, "pageNumber");
 
     const totalEvents = await Eventss.countDocuments(query);
     const totalPages = Math.ceil(totalEvents / limitNumber);
+    console.log(
+      totalEvents,
+      limitNumber,
+      totalEvents / limitNumber,
+      totalPages,
+      "totalPages"
+    );
 
     const events = await Eventss.find(query)
       .sort({ eventDate: -1 })
       .skip((pageNumber - 1) * limitNumber)
       .limit(limitNumber);
 
-    res.json({
+   return res.json({
       events,
       totalPages,
       currentPage: pageNumber,
@@ -168,11 +200,11 @@ app.get("/api/getEvent", async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching events:", error);
-    res.status(500).json({ error: "Internal server error while fetching events." });
+    res
+      .status(500)
+      .json({ error: "Internal server error while fetching events." });
   }
 });
-
-
 
 app.get("/api/events/:id", async (req, res) => {
   try {
@@ -200,18 +232,25 @@ app.put("/api/events/:id", upload.single("eventFile"), async (req, res) => {
     }
 
     // Update the event in the database
-    const updatedEvent = await Eventss.findByIdAndUpdate(req.params.id, updatedData, { new: true });
+    const updatedEvent = await Eventss.findByIdAndUpdate(
+      req.params.id,
+      updatedData,
+      { new: true }
+    );
 
-    if (!updatedEvent) return res.status(404).json({ error: "Event not found" });
+    if (!updatedEvent)
+      return res.status(404).json({ error: "Event not found" });
 
-    res.status(200).json({ message: "Event updated successfully!", event: updatedEvent });
+    res
+      .status(200)
+      .json({ message: "Event updated successfully!", event: updatedEvent });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error updating event." });
   }
 });
 
-import fs from "fs"
+import fs from "fs";
 // 👉 **5. Delete event by ID (DELETE /api/events/:id)**
 app.delete("/api/events/:id", async (req, res) => {
   try {
@@ -236,21 +275,19 @@ app.delete("/api/events/:id", async (req, res) => {
       }
     }
 
-   return res.status(200).json({ message: "Event deleted successfully!" });
+    return res.status(200).json({ message: "Event deleted successfully!" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error deleting event." });
   }
 });
 
-
 // Start the server
 
-
-import {AuthRoutes, UserRoutes,EventRoutes} from "./routes/index.js"
-app.use("/api/auth", AuthRoutes)
-app.use("/api/user", UserRoutes)
-app.use("/api/events", EventRoutes)
-
+import { AuthRoutes, UserRoutes, EventRoutes } from "./routes/index.js";
+import { log } from "console";
+app.use("/api/auth", AuthRoutes);
+app.use("/api/user", UserRoutes);
+app.use("/api/events", EventRoutes);
 
 app.listen(PORT, () => console.log(`🚀 Server is running on port ${PORT}!`));

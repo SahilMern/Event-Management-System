@@ -23,6 +23,7 @@ const EditEvent = () => {
           eventFile: data.eventFile || null, // DB se jo file mili, uska naam store karein
         });
       })
+
       .catch((err) => console.error(err));
   }, [id]);
 
@@ -65,7 +66,6 @@ const EditEvent = () => {
   //   }
   // };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -74,6 +74,8 @@ const EditEvent = () => {
     formData.append("eventDate", eventData.eventDate);
     formData.append("eventType", eventData.eventType);
     formData.append("eventLink", eventData.eventLink);
+
+    console.log(eventData.eventFile, "eventData.eventFile ");
 
     // Check if a new file is selected and append accordingly
     if (eventData.eventFile && typeof eventData.eventFile !== "string") {
@@ -95,7 +97,7 @@ const EditEvent = () => {
     } catch (error) {
       console.error("Update Error:", error);
     }
-};
+  };
 
   return (
     <div className="max-w-lg mx-auto p-6 border rounded-lg shadow-lg">

@@ -6,6 +6,9 @@ import Eventss from "../models/Event.models.js";
 export const createEvent = async (req, res) => {
   try {
     const { eventName, eventDate, eventType, eventLink } = req.body;
+    console.log(eventName, eventDate, eventType, eventLink, "data");
+        
+    // process.exit()
     const eventFile = req.files?.eventFile?.[0]?.path || null;
     const attendeeFile = req.files?.attendeeFile?.[0]?.path || null;
 
