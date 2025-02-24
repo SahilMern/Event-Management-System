@@ -1,56 +1,65 @@
 import { Route, Routes } from "react-router-dom";
+
+// Common UI components
 import Navbar from "./components/common/Navbar/Navbar";
+import Footer from "./components/common/Footer/Footer";
+
+// Public pages
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Footer from "./components/common/Footer/Footer";
-import Under from "./Under";
-// import Event from "./components/Event/Event";
-import AddEvent from "./components/admin/AddEvent/AddEvent";
-import EditEvent from "./components/admin/EditEvent/EditEvent";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Admin from "./components/admin/Admin";
-import NotFound from "./pages/NotFound";
-import Home from "./pages/Home";
-import Users from "./components/admin/pages/Users";
-import Event from "./components/admin/pages/Event";
 import EventDetails from "./pages/EventDetails";
-// import Event from "./components/admin/AddEvent/AddEvent";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+// Protected user routes
+import AllEvents from "./pages/Home";
+
+// Admin pages
+import Admin from "./components/admin/Admin";
+import Users from "./components/admin/pages/Users/Users";
+import Event from "./components/admin/pages/Event";
+import AddEvent from "./components/admin/pages/AddEvent";
+import EditEvent from "./components/admin/pages/EditEvent";
+
+// Not-found page
+import NotFound from "./pages/NotFound";
+import AdminDashBoard from "./components/admin/AdminDashBoard";
+import UserEdits from "./components/admin/pages/Users/UserEdits";
 
 const App = () => {
   return (
     <>
+      {/* Navbar for all pages */}
       <Navbar />
+
+      {/* Main content area */}
       <div className="min-div">
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<AllEvents />} />
           <Route path="/eventDetails/:id" element={<EventDetails />} />
-
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          {/* <Route path="/under" element={<AddEvent />} /> */}
-
-          {/* <Route path="/event" element={<Event />} /> */}
 
           {/* Protected Routes for Admin */}
           <Route element={<ProtectedRoute roles={["admin"]} />}>
             <Route path="/admin" element={<Admin />}>
-              {/* Nested Routes under /admin */}
+              {/* Default route for /admin */}
+              <Route index element={<AdminDashBoard />} /> {/* Fixed syntax error */}
               <Route path="users" element={<Users />} />
-              <Route path="events" element={<Event />} />
+              <Route path="edit-user/:id" element={<UserEdits />} />
 
+              <Route path="events" element={<Event />} />
               <Route path="addevent" element={<AddEvent />} />
               <Route path="edit-event/:id" element={<EditEvent />} />
-              {/* <Route path="edit-event/:id" element={<EditEvent />} /> New Route */}
             </Route>
           </Route>
 
           {/* 404 Page for Unmatched Routes */}
           <Route path="/*" element={<NotFound />} />
-          <Route path="/under" element={<Under />} />
-
         </Routes>
       </div>
+
+      {/* Footer for all pages */}
       <Footer />
     </>
   );

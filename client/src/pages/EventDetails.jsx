@@ -1,25 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios"; // Import Axios
 
 const EventDetails = () => {
   const { id } = useParams(); // Get the event ID from the URL
+  const navigate = useNavigate(); // For navigation
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch event details based on event ID
+  // Fetch event details using Axios
   const fetchEventDetails = async () => {
     try {
-      const response = await fetch(`http://localhost:9080/api/events/${id}`);
-      if (!response.ok) {
-        throw new Error("Event not found");
-      }
-      const data = await response.json();
-      console.log(data, "Data data");
+      const response = await axios.get(`http://localhost:9080/api/events/${id}`);
+      // console.log(response, "response");
       
-      setEvent(data);
+      setEvent(response.data); 
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.message || "Failed to fetch event details");
     } finally {
       setLoading(false);
     }
@@ -54,13 +52,15 @@ const EventDetails = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center px-4 sm:px-8 py-12">
       <div className="max-w-6xl w-full">
-        <h1 className="text-5xl font-bold text-center text-gray-900 mb-8">
+        {/* Event Title */}
+        <h1 className="text-4xl sm:text-5xl font-bold text-center text-gray-900 mb-8">
           {event.eventName}
         </h1>
 
+        {/* Event Card */}
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
           <div className="flex flex-col lg:flex-row">
-            {/* Image or Video */}
+            {/* Image or Video Section */}
             <div className="lg:w-1/2">
               {event.eventType === "image" ? (
                 <img
@@ -70,7 +70,11 @@ const EventDetails = () => {
                 />
               ) : event.eventType === "video" ? (
                 <div className="relative w-full h-96">
-                  <video controls muted className="w-full h-full object-cover">
+                  <video
+                    controls
+                    muted
+                    className="w-full h-full object-cover"
+                  >
                     <source
                       src={`http://localhost:9080/${event.eventFile}`}
                       type="video/mp4"
@@ -81,9 +85,10 @@ const EventDetails = () => {
               ) : null}
             </div>
 
-            {/* Event Details */}
+            {/* Event Details Section */}
             <div className="lg:w-1/2 p-8">
               <div className="space-y-6">
+                {/* Event Date */}
                 <div>
                   <p className="text-sm text-gray-500">Date</p>
                   <p className="text-lg font-semibold text-gray-900">
@@ -91,6 +96,7 @@ const EventDetails = () => {
                   </p>
                 </div>
 
+                {/* Attendees */}
                 <div>
                   <p className="text-sm text-gray-500">Attendees</p>
                   <p className="text-lg font-semibold text-gray-900">
@@ -98,28 +104,17 @@ const EventDetails = () => {
                   </p>
                 </div>
 
+                {/* Event Description */}
                 <div>
                   <p className="text-sm text-gray-500">Description</p>
                   <p className="text-lg text-gray-700 leading-relaxed">
-                    {/* {event.eventDescription} */}
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut architecto suscipit, optio ea natus ducimus tempore id possimus inventore sed deleniti, in, excepturi veniam ipsa.
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut
+                    architecto suscipit, optio ea natus ducimus tempore id
+                    possimus inventore sed deleniti, in, excepturi veniam ipsa.
                   </p>
                 </div>
 
-                {/* <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                  <button
-                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300 flex-1 text-center"
-                    onClick={() => window.history.back()}
-                  >
-                    Back to Events
-                  </button>
-                  <a
-                    href={`mailto:${event.contactEmail}`}
-                    className="bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition duration-300 flex-1 text-center"
-                  >
-                    Contact Organizer
-                  </a>
-                </div> */}
+         
               </div>
             </div>
           </div>

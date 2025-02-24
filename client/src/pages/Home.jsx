@@ -1,8 +1,9 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-const Home = () => {
+const AllEvents = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const [events, setEvents] = useState([]);
@@ -22,22 +23,29 @@ const Home = () => {
         endDate,
         page,
       }).toString();
-
-      const response = await fetch(
-        `http://localhost:9080/api/getEvent?${queryParams}`
+  
+      // Making the GET request using axios
+      const response = await axios.get(
+        `http://localhost:9080/api/events?${queryParams}`
       );
-
-      if (!response.ok) {
+  
+      // console.log(response, "response response");
+  
+      // Check if the response is successful
+      if (response.status !== 200) {
         throw new Error("Error fetching events.");
       }
-
-      const data = await response.json();
+  
+      // Since axios already parses the response as JSON, just use response.data
+      const data = response.data;
       setEvents(data.events);
       setTotalPages(data.totalPages);
+  
     } catch (error) {
-      setError(error.message);
+      console.error(error);
+      setError(error.message);  // Handling errors and updating state
     } finally {
-      setLoading(false);
+      setLoading(false);  // Always stop the loading state when done
     }
   };
 
@@ -84,10 +92,10 @@ const Home = () => {
         Featured Events
       </h1>
 
-      {/* Search and Filter Form */}
+      {/* Search and Filter Form Fun */}
       <form
         onSubmit={handleSearch}
-        className="mb-8 max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-md"
+        className="mb-8 w-[80%] mx-auto bg-white p-6 rounded-xl shadow-md"
       >
         <div className="flex flex-wrap gap-4 justify-between">
           <input
@@ -120,7 +128,7 @@ const Home = () => {
       </form>
 
       {/* Event Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto mt-8 mb-8">
         {events.length > 0 ? (
           events.map((event, index) => (
             <div
@@ -235,4 +243,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default AllEvents;

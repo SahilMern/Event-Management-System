@@ -5,7 +5,9 @@ import {   createEvent,
   getAllEvents,
   getEventById,
   updateEvent,
-  deleteEvent, } from "../controllers/Events.Controller.js";
+  deleteEvent,
+  getTotalUsers,
+  getTotalEvents, } from "../controllers/Events.Controller.js";
 
 const router = express.Router();
 
@@ -23,5 +25,10 @@ router.put("/:id", upload.single("eventFile"), updateEvent);
 
 // Delete an event by ID
 router.delete("/:id", deleteEvent);
+
+router.get("/total-users",getTotalUsers);
+
+// Get total number of events
+router.get("/total-events",getTotalEvents);
 
 export default router;
