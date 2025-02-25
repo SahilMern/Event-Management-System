@@ -11,7 +11,7 @@ const AdminDashBoard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const usersResponse = await axios.get("http://localhost:9080/api/admin/total-users");
+        const usersResponse = await axios.get("http://localhost:9080/api/events/total-users");
         const eventsResponse = await axios.get("http://localhost:9080/api/admin/total-events");
 
         setTotalUsers(usersResponse.data.totalUsers);

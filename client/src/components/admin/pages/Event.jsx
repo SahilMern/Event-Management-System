@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -80,9 +80,9 @@ const Event = () => {
     }
   };
 
-  const handleAddEvents = () => {
-    navigate('/admin/addevent');
-  };
+  // const handleAddEvents = () => {
+  //   navigate('/admin/addevent');
+  // };
 
   if (loading) {
     return (
@@ -130,12 +130,15 @@ const Event = () => {
             Reset
           </button>
 
+<NavLink to={'/admin/addevent'}>
+
           <button
             className="bg-black rounded-sm text-white p-2"
-            onClick={handleAddEvents}
-          >
+            // onClick={handleAddEvents}
+            >
             Add Events
           </button>
+            </NavLink>
         </div>
       </form>
 

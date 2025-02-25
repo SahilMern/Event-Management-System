@@ -145,53 +145,51 @@ export const updateEvent = async (req, res) => {
       eventDescription,
       eventLocation,
       existingFile, // Existing Cloudinary URL
-      prviousimageurl
+      
     } = req.body;
 
-    console.log(prviousimageurl, "prviousimageurl");
-    
     let eventFile = existingFile; // Use existing file by default
+    console.log(existingFile, "existing file");
 
     // If a new file is uploaded
-    // if (req.file) {
-    //   // Remove old file from Cloudinary only if it exists
-    //   if (prviousimageurl) {
-    //     console.log("yaha tak aaa gayae hu");
-        
-    //     // Extract public ID from Cloudinary URL
-    //     // const urlParts = existingFile.split('/');
-    //     // const publicId = urlParts
-    //     //   .slice(urlParts.indexOf('upload') + 1) // Get the part after "upload"
-    //     //   .join('/') // Join the remaining parts
-    //     //   .split('.')[0]; // Remove file extension
+    if (req.file) {
+      console.log(existingFile, "existing file");
+      
+      // Remove old file from Cloudinary only if it exists
+      if (existingFile) {
+        // Extract public ID from Cloudinary URL
+        const urlParts = existingFile.split('/');
+        const publicId = urlParts
+          .slice(urlParts.indexOf('upload') + 1) // Get the part after "upload"
+          .join('/') // Join the remaining parts
+          .split('.')[0]; // Remove file extension
 
-    //     // console.log(publicId, 'Public ID to delete');
+        console.log(publicId, 'Public ID to delete');
 
-    //     // // Delete old file from Cloudinary
-    //     // await cloudinary.v2.uploader.destroy(publicId, {
-    //     //   resource_type: eventType === 'video' ? 'video' : 'image',
-    //     // });
-    //   }
+        // Delete old file from Cloudinary
+        await cloudinary.v2.uploader.destroy(publicId, {
+          resource_type: eventType === 'video' ? 'video' : 'image',
+        });
+      }
 
-    //   process.exit()
-    //   // Upload new file to Cloudinary
-    //   const result = await new Promise((resolve, reject) => {
-    //     cloudinary.v2.uploader.upload_stream(
-    //       {
-    //         resource_type: eventType === 'video' ? 'video' : 'image',
-    //       },
-    //       (error, result) => {
-    //         if (error) {
-    //           reject(error);
-    //         } else {
-    //           resolve(result);
-    //         }
-    //       }
-    //     ).end(req.file.buffer); // Pass file buffer to Cloudinary
-    //   });
+      // Upload new file to Cloudinary
+      // const result = await new Promise((resolve, reject) => {
+      //   cloudinary.v2.uploader.upload_stream(
+      //     {
+      //       resource_type: eventType === 'video' ? 'video' : 'image',
+      //     },
+      //     (error, result) => {
+      //       if (error) {
+      //         reject(error);
+      //       } else {
+      //         resolve(result);
+      //       }
+      //     }
+      //   ).end(req.file.buffer); // Pass file buffer to Cloudinary
+      // });
 
-    //   eventFile = result.secure_url; // Save new Cloudinary URL
-    // }
+      // eventFile = result.secure_url; // Save new Cloudinary URL
+    }
 
     process.exit()
     // Update the event in the database
@@ -217,7 +215,7 @@ export const updateEvent = async (req, res) => {
     console.error('Error updating event:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 // Delete an event by ID
 export const deleteEvent = async (req, res) => {

@@ -85,10 +85,7 @@ const EditEvent = () => {
     formData.append('eventLink', eventData.eventLink);
     formData.append('eventDescription', eventData.eventDescription);
     formData.append('eventLocation', eventData.eventLocation);
-    formData.append('prviousimageurl', eventData.eventFile);
 
-    // console.log(eventData.eventFile, "eventData.eventFile");
-    
     // Append the new file if it exists
     if (eventData.eventFile && typeof eventData.eventFile !== 'string') {
       formData.append('eventFile', eventData.eventFile);
