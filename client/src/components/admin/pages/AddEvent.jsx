@@ -6,14 +6,14 @@ const AddEvent = () => {
   const [eventDate, setEventDate] = useState("");
   const [eventType, setEventType] = useState("image");
   const [eventFile, setEventFile] = useState(null);
-  const [attendeeFile, setAttendeeFile] = useState(null);
   const [eventLink, setEventLink] = useState("");
+  const [eventDescription, setEventDescription] = useState(""); // New state for description
+  const [eventLocation, setEventLocation] = useState(""); // New state for location
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   // Refs for file inputs
   const eventFileRef = useRef(null);
-  const attendeeFileRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,8 +46,9 @@ const AddEvent = () => {
     formData.append("eventDate", eventDate);
     formData.append("eventType", eventType);
     formData.append("eventFile", eventFile);
-    formData.append("attendeeFile", attendeeFile);
     formData.append("eventLink", eventLink);
+    formData.append("eventDescription", eventDescription); // Append description
+    formData.append("eventLocation", eventLocation); // Append location
 
     try {
       setLoading(true);
@@ -69,12 +70,12 @@ const AddEvent = () => {
       setEventDate("");
       setEventType("image");
       setEventLink("");
+      setEventDescription(""); // Reset description
+      setEventLocation(""); // Reset location
 
-      // Clear file inputs
+      // Clear file input
       setEventFile(null);
-      setAttendeeFile(null);
       if (eventFileRef.current) eventFileRef.current.value = ""; // Clear event file input
-      if (attendeeFileRef.current) attendeeFileRef.current.value = ""; // Clear attendee file input
     } catch (error) {
       console.error("Error:", error);
       setError(
@@ -171,17 +172,31 @@ const AddEvent = () => {
           />
         </div>
 
-        {/* Upload Attendee List */}
-        <div className="border p-6 rounded-lg bg-gray-50 border-dotted">
+        {/* Event Description */}
+        <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Upload Attendee List (Excel)
+            Event Description
+          </label>
+          <textarea
+            value={eventDescription}
+            onChange={(e) => setEventDescription(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all"
+            placeholder="Enter a description for the event"
+            rows="4"
+          />
+        </div>
+
+        {/* Event Location */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Event Location
           </label>
           <input
-            type="file"
-            onChange={(e) => setAttendeeFile(e.target.files[0])}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-            required
-            ref={attendeeFileRef} // Add ref to attendee file input
+            type="text"
+            value={eventLocation}
+            onChange={(e) => setEventLocation(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-all"
+            placeholder="Enter the event location"
           />
         </div>
 

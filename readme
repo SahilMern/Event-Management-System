@@ -1,0 +1,10 @@
+Project Name: - Event Management system
+
+Technology I Used: -
+React(Vite)(UI)
+Redux - toolkit(state manegmanet)
+NodeJs
+Mongodb
+ExpressJs
+TailwindCss(for css)
+cloudinary(cloud storage for storing image and video)

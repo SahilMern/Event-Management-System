@@ -1,32 +1,53 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const EditEvent = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [eventData, setEventData] = useState({
-    eventName: "",
-    eventDate: "",
-    eventType: "image",
-    eventLink: "",
-    eventFile: null, // Existing file ka naam store hoga
+    eventName: '',
+    eventDate: '',
+    eventType: 'image',
+    eventLink: '',
+    eventFile: null, // For new file upload
+    eventDescription: '',
+    eventLocation: '',
   });
+  const [previewUrl, setPreviewUrl] = useState(null); // For preview URL
+  const [loading, setLoading] = useState(false); // Loading state
 
   // Fetch event data on component mount
   useEffect(() => {
     const fetchEventData = async () => {
       try {
         const response = await axios.get(`http://localhost:9080/api/events/${id}`);
-        const data = response.data;
-        setEventData({
-          ...data,
-          eventDate: data.eventDate ? data.eventDate.split("T")[0] : "",
-          eventType: data.eventType.toLowerCase(),
-          eventFile: data.eventFile || null, // DB se jo file mili, uska naam store karein
-        });
+        console.log(response.data, 'response in edit page');
+
+        if (response.data && response.data.event) {
+          const data = response.data.event;
+
+          setEventData({
+            eventName: data.eventName || '',
+            eventDate: data.eventDate ? data.eventDate.split('T')[0] : '',
+            eventType: data.eventType.toLowerCase() || 'image',
+            eventFile: data.eventFile || null, // Cloudinary URL
+            eventDescription: data.eventDescription || '',
+            eventLocation: data.eventLocation || '',
+            eventLink: data.eventLink || '',
+          });
+
+          // Set preview URL if the file already exists
+          if (data.eventFile) {
+            setPreviewUrl(data.eventFile); // Directly use Cloudinary URL
+          }
+        } else {
+          console.error('Event data is missing in the response');
+        }
       } catch (error) {
-        console.error("Error fetching event data:", error);
+        console.error('Error fetching event data:', error);
       }
     };
 
@@ -36,26 +57,44 @@ const EditEvent = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEventData((prev) => ({ ...prev, [name]: value }));
+
+    // If the event type is changed (image/video), reset previewUrl
+    if (name === 'eventType') {
+      setPreviewUrl(null); // Reset preview URL when type is changed
+    }
   };
 
   const handleFileChange = (e) => {
-    setEventData((prev) => ({ ...prev, eventFile: e.target.files[0] }));
+    const file = e.target.files[0];
+    setEventData((prev) => ({ ...prev, eventFile: file }));
+
+    // Set the preview URL for the selected file
+    const fileUrl = URL.createObjectURL(file);
+    setPreviewUrl(fileUrl); // Update preview URL
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("eventName", eventData.eventName);
-    formData.append("eventDate", eventData.eventDate);
-    formData.append("eventType", eventData.eventType);
-    formData.append("eventLink", eventData.eventLink);
+    setLoading(true); // Start loading
 
-    // Check if a new file is selected and append accordingly
-    if (eventData.eventFile && typeof eventData.eventFile !== "string") {
-      formData.append("eventFile", eventData.eventFile);
-    } else if (eventData.eventFile && typeof eventData.eventFile === "string") {
-      formData.append("existingFile", eventData.eventFile); // Send existing file name if no new file is selected
+    const formData = new FormData();
+    formData.append('eventName', eventData.eventName);
+    formData.append('eventDate', eventData.eventDate);
+    formData.append('eventType', eventData.eventType);
+    formData.append('eventLink', eventData.eventLink);
+    formData.append('eventDescription', eventData.eventDescription);
+    formData.append('eventLocation', eventData.eventLocation);
+    formData.append('prviousimageurl', eventData.eventFile);
+
+    // console.log(eventData.eventFile, "eventData.eventFile");
+    
+    // Append the new file if it exists
+    if (eventData.eventFile && typeof eventData.eventFile !== 'string') {
+      formData.append('eventFile', eventData.eventFile);
+    } else if (eventData.eventFile && typeof eventData.eventFile === 'string') {
+      // If no new file is uploaded, send the existing file URL
+      formData.append('existingFile', eventData.eventFile);
     }
 
     try {
@@ -64,135 +103,181 @@ const EditEvent = () => {
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data", // Required for file uploads
+            'Content-Type': 'multipart/form-data', // Required for file uploads
           },
         }
       );
 
       if (response.status === 200) {
-        alert("Event updated successfully!");
-        // navigate("/");  // Uncomment if you want to redirect after successful update
+        toast.success('Event updated successfully!');
+        // navigate('/'); // Redirect after successful update
       }
     } catch (error) {
-      console.error("Update Error:", error);
+      console.error('Update Error:', error);
+      toast.error('Error updating the event!');
+    } finally {
+      setLoading(false); // Stop loading after the API call is done
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-8 bg-white rounded-xl shadow-lg">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Edit Event</h2>
+    <div className="max-w-2xl mx-auto p-8 bg-white rounded-xl shadow-2xl">
+      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Edit Event</h2>
+
+      {/* Event Update Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Event Name */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Event Name
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Event Name</label>
           <input
             type="text"
             name="eventName"
             value={eventData.eventName}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter event name"
             required
           />
         </div>
 
         {/* Event Date */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Event Date
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Event Date</label>
           <input
             type="date"
             name="eventDate"
             value={eventData.eventDate}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             required
           />
         </div>
 
         {/* Event Type */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Event Type
-          </label>
-          <select
-            name="eventType"
-            value={eventData.eventType}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-          >
-            <option value="image">Image</option>
-            <option value="video">Video</option>
-          </select>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Event Type</label>
+          <div className="flex space-x-4">
+            <label className="flex items-center space-x-2">
+              <input
+                type="radio"
+                value="image"
+                checked={eventData.eventType === 'image'}
+                onChange={() => setEventData({ ...eventData, eventType: 'image' })}
+                className="form-radio h-5 w-5 text-blue-600"
+              />
+              <span className="text-gray-700">Image</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="radio"
+                value="video"
+                checked={eventData.eventType === 'video'}
+                onChange={() => setEventData({ ...eventData, eventType: 'video' })}
+                className="form-radio h-5 w-5 text-blue-600"
+              />
+              <span className="text-gray-700">Video</span>
+            </label>
+          </div>
         </div>
 
-        {/* Upload File */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Upload {eventData.eventType === "image" ? "Image" : "Video"}
+        {/* Upload Event File */}
+        <div className="border p-6 rounded-lg bg-gray-50 border-dotted">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Upload {eventData.eventType === 'image' ? 'Image' : 'Video'}
           </label>
           <input
             type="file"
-            accept={eventData.eventType === "image" ? "image/*" : "video/*"}
             onChange={handleFileChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            accept={eventData.eventType === 'image' ? 'image/*' : 'video/*'}
           />
+        </div>
 
-          {/* Existing File Name */}
-          {eventData.eventFile && typeof eventData.eventFile === "string" && (
-            <p className="text-sm text-gray-500 mt-2">
-              Current File: {eventData.eventFile}
-            </p>
-          )}
-
-          {/* Image Preview */}
-          {eventData.eventFile &&
-            typeof eventData.eventFile === "string" &&
-            eventData.eventType === "image" && (
-              <div className="mt-4">
-                <img
-                  src={`http://localhost:9080/uploads/${eventData.eventFile}`}
-                  alt="Uploaded Image"
-                  className="w-48 h-48 object-cover rounded-lg shadow-sm"
-                />
-              </div>
+        {/* Show File Preview */}
+        {previewUrl && (
+          <div className="mt-4">
+            <p className="text-sm text-gray-600">Preview:</p>
+            {eventData.eventType === 'image' ? (
+              <img src={previewUrl} alt="Preview" className="w-full h-auto max-h-64 object-cover rounded-lg" />
+            ) : (
+              <video controls className="w-full h-auto max-h-64 rounded-lg">
+                <source src={previewUrl} type="video/mp4" />
+              </video>
             )}
+          </div>
+        )}
 
-          {/* Video Name Only (No Preview) */}
-          {eventData.eventFile &&
-            typeof eventData.eventFile === "string" &&
-            eventData.eventType === "video" && (
-              <p className="text-sm text-gray-500 mt-2">
-                Current Video: {eventData.eventFile}
-              </p>
-            )}
+        {/* Event Description */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Event Description</label>
+          <textarea
+            name="eventDescription"
+            value={eventData.eventDescription}
+            onChange={handleChange}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter event description"
+            rows="4"
+          />
+        </div>
+
+        {/* Event Location */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Event Location</label>
+          <input
+            type="text"
+            name="eventLocation"
+            value={eventData.eventLocation}
+            onChange={handleChange}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter event location"
+          />
         </div>
 
         {/* Event Web Link */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Event Web Link
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Event Web Link</label>
           <input
             type="url"
             name="eventLink"
             value={eventData.eventLink}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-            placeholder="Enter URL"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter event URL"
           />
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all"
+          className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
+          disabled={loading} // Disable the button while loading
         >
-          Update Event
+          {loading ? (
+            <div className="flex items-center justify-center">
+              <svg
+                className="animate-spin h-5 w-5 mr-3 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Updating...
+            </div>
+          ) : (
+            'Update Event'
+          )}
         </button>
       </form>
+
+      {/* Toast Container */}
+      <ToastContainer />
     </div>
   );
 };

@@ -17,7 +17,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           {/* Logo and Event Name */}
           <Link to="/" className="flex items-center space-x-2">
-            <img src="./event.png" alt="Event Logo" className="h-12 w-12" />
+            <img src="/event.png" alt="Event Logo" className="h-12 w-12" />
             {/* Logo Image */}
             <span className="text-3xl font-semibold text-gray-800 hover:text-blue-600 transition duration-300">
               Event
