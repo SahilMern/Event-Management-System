@@ -77,9 +77,9 @@ const EditEvent = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     setLoading(true); // Start loading
-
+  
     const formData = new FormData();
     formData.append('eventName', eventData.eventName);
     formData.append('eventDate', eventData.eventDate);
@@ -87,15 +87,22 @@ const EditEvent = () => {
     formData.append('eventLink', eventData.eventLink);
     formData.append('eventDescription', eventData.eventDescription);
     formData.append('eventLocation', eventData.eventLocation);
-
+  
+    // Always append the existing file URL
+    if (eventData.eventFile && typeof eventData.eventFile === 'string') {
+      formData.append('existingFile', eventData.eventFile);
+    }
+  
     // Append the new file if it exists
     if (eventData.eventFile && typeof eventData.eventFile !== 'string') {
       formData.append('eventFile', eventData.eventFile);
-    } else if (eventData.eventFile && typeof eventData.eventFile === 'string') {
-      // If no new file is uploaded, send the existing file URL
-      formData.append('existingFile', eventData.eventFile);
     }
-
+  
+    // Debugging: Log FormData before sending
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+  
     try {
       const response = await axios.put(
         `http://localhost:9080/api/events/${id}`,
@@ -107,7 +114,7 @@ const EditEvent = () => {
           withCredentials: true, // Include cookies
         }
       );
-
+  
       if (response.status === 200) {
         toast.success('Event updated successfully!');
         // navigate('/'); // Redirect after successful update
