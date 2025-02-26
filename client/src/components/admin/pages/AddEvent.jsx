@@ -1,6 +1,9 @@
 import { useState, useRef } from "react";
 import axios from "axios"; // Import Axios
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const AddEvent = () => {
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
@@ -11,6 +14,7 @@ const AddEvent = () => {
   const [eventLocation, setEventLocation] = useState(""); // New state for location
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null); // State for preview URL
 
   // Refs for file inputs
   const eventFileRef = useRef(null);
@@ -59,11 +63,14 @@ const AddEvent = () => {
           headers: {
             "Content-Type": "multipart/form-data", // Required for file uploads
           },
+          withCredentials: true,
         }
       );
 
       console.log(response.data);
-      alert("Event added successfully!");
+      // alert("Event added successfully!");
+      toast.success('Event added successfully!');
+      
 
       // Reset form
       setEventName("");
@@ -72,6 +79,7 @@ const AddEvent = () => {
       setEventLink("");
       setEventDescription(""); // Reset description
       setEventLocation(""); // Reset location
+      setPreviewUrl(null); // Clear preview
 
       // Clear file input
       setEventFile(null);
@@ -87,7 +95,20 @@ const AddEvent = () => {
     }
   };
 
+  // Handle file selection and preview
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setEventFile(file);
+
+    if (file) {
+      const fileUrl = URL.createObjectURL(file);
+      setPreviewUrl(fileUrl);
+    }
+  };
+
   return (
+    <>
+
     <div className="max-w-2xl mx-auto p-8 bg-white rounded-xl shadow-2xl transform transition-all duration-300 hover:shadow-3xl">
       <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
         Add an Event
@@ -165,12 +186,34 @@ const AddEvent = () => {
           </label>
           <input
             type="file"
-            onChange={(e) => setEventFile(e.target.files[0])}
+            onChange={handleFileChange}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
             required
             ref={eventFileRef} // Add ref to event file input
           />
         </div>
+
+        {/* Preview */}
+        {previewUrl && (
+  <div className="mt-4">
+    {eventType === "image" ? (
+      <img
+        src={previewUrl}
+        alt="Event Preview"
+        className=" h-[8rem] w-full rounded-2xl" // 2rem is equivalent to 32px, which is 8 units in Tailwind (1rem = 16px)
+      />
+    ) : (
+      <video
+        src={previewUrl}
+        controls
+        className="h-[20rem] w-full rounded-2xl"
+      >
+        Your browser does not support the video tag.
+      </video>
+    )}
+  </div>
+)}
+
 
         {/* Event Description */}
         <div>
@@ -250,6 +293,9 @@ const AddEvent = () => {
         </button>
       </form>
     </div>
+      <ToastContainer />
+    </>
+
   );
 };
 

@@ -1,14 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { register } from "../helper/backend/backend";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const navigate = useNavigate();
 
+  const {user} = useSelector((state) => state.auth)
+  console.log(user, "user");
+  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -25,6 +29,13 @@ const Register = () => {
       toast.error(error.response?.data?.message || "Registration failed");
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  
+  }, [user])
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

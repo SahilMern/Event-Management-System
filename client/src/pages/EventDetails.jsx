@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, NavLink } from "react-router-dom";
 import axios from "axios"; // Import Axios
 
 const EventDetails = () => {
@@ -12,10 +12,12 @@ const EventDetails = () => {
   // Fetch event details using Axios
   const fetchEventDetails = async () => {
     try {
-      const response = await axios.get(`http://localhost:9080/api/events/${id}`);
-      // console.log(response, "response");
+      const response = await axios.get(
+        `http://localhost:9080/api/events/${id}`
+      );
+      console.log(response.data.event);
       
-      setEvent(response.data); 
+      setEvent(response.data.event); // Set event data
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch event details");
     } finally {
@@ -50,35 +52,28 @@ const EventDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center px-4 sm:px-8 py-12">
-      <div className="max-w-6xl w-full">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center px-4 sm:px-8 py-12">
+      <div className="max-w-6xl w-full space-y-10">
         {/* Event Title */}
-        <h1 className="text-4xl sm:text-5xl font-bold text-center text-gray-900 mb-8">
+        <h1 className="text-5xl sm:text-6xl font-extrabold text-center text-gray-900 mb-8">
           {event.eventName}
         </h1>
 
         {/* Event Card */}
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-          <div className="flex flex-col lg:flex-row">
+        <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-300">
+          <div className="grid lg:grid-cols-2 gap-6 p-8">
             {/* Image or Video Section */}
-            <div className="lg:w-1/2">
+            <div className="relative">
               {event.eventType === "image" ? (
                 <img
-                  src={`http://localhost:9080/${event.eventFile}`}
+                  src={`${event.eventFile}`}
                   alt={event.eventName}
-                  className="w-full h-96 object-cover"
+                  className="w-full h-96 object-cover rounded-lg shadow-lg"
                 />
               ) : event.eventType === "video" ? (
                 <div className="relative w-full h-96">
-                  <video
-                    controls
-                    muted
-                    className="w-full h-full object-cover"
-                  >
-                    <source
-                      src={`http://localhost:9080/${event.eventFile}`}
-                      type="video/mp4"
-                    />
+                  <video controls muted className="w-full h-full rounded-lg shadow-lg">
+                    <source src={`/${event.eventFile}`} type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
                 </div>
@@ -86,38 +81,45 @@ const EventDetails = () => {
             </div>
 
             {/* Event Details Section */}
-            <div className="lg:w-1/2 p-8">
-              <div className="space-y-6">
+            <div className="flex flex-col space-y-6">
+              <div className="space-y-2">
                 {/* Event Date */}
-                <div>
-                  <p className="text-sm text-gray-500">Date</p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {new Date(event.eventDate).toLocaleDateString()}
-                  </p>
-                </div>
+                <p className="text-sm text-gray-500">Date</p>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {new Date(event.eventDate).toLocaleDateString()}
+                </p>
+              </div>
 
+              <div className="space-y-2">
                 {/* Attendees */}
-                <div>
-                  <p className="text-sm text-gray-500">Attendees</p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {event.attendees}
-                  </p>
-                </div>
+                <p className="text-sm text-gray-500">Attendees</p>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {event.attendees}
+                </p>
+              </div>
 
+              <div className="space-y-2">
                 {/* Event Description */}
-                <div>
-                  <p className="text-sm text-gray-500">Description</p>
-                  <p className="text-lg text-gray-700 leading-relaxed">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut
-                    architecto suscipit, optio ea natus ducimus tempore id
-                    possimus inventore sed deleniti, in, excepturi veniam ipsa.
-                  </p>
-                </div>
-
-         
+                <p className="text-sm text-gray-500">Description</p>
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  {event.description || "No description available for this event."}
+                </p>
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Back Button */}
+        <div className="text-center mt-8">
+        <NavLink to={"/"}>
+
+          <button
+            // Go back to the previous page
+            className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105"
+          >
+            Go Back
+          </button>
+        </NavLink>
         </div>
       </div>
     </div>

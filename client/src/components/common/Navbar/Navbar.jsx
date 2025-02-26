@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate hook
 import { FaSignOutAlt } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../../redux/slice/AuthSlice";
@@ -7,7 +7,7 @@ import axios from 'axios';
 const Navbar = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user); // Get user state from Redux
-
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   const handleLogout = async () => {
     try {
@@ -19,7 +19,8 @@ const Navbar = () => {
       // Check if the response is successful
       if (response.data.success) {
         console.log(response.data.message);
-        dispatch(logout()); 
+        dispatch(logout());  // Dispatch logout action to Redux store
+        navigate("/login");  // Redirect to the login page after logout
       }
     } catch (error) {
       console.error('Error logging out:', error.response ? error.response.data : error.message);
@@ -33,7 +34,6 @@ const Navbar = () => {
           {/* Logo and Event Name */}
           <Link to="/" className="flex items-center space-x-2">
             <img src="/event.png" alt="Event Logo" className="h-12 w-12" />
-            {/* Logo Image */}
             <span className="text-3xl font-semibold text-gray-800 hover:text-blue-600 transition duration-300">
               Event
             </span>

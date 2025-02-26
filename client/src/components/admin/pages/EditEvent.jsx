@@ -23,7 +23,9 @@ const EditEvent = () => {
   useEffect(() => {
     const fetchEventData = async () => {
       try {
-        const response = await axios.get(`http://localhost:9080/api/events/${id}`);
+        const response = await axios.get(`http://localhost:9080/api/events/${id}`, {
+          withCredentials: true, // Include cookies
+        });
         console.log(response.data, 'response in edit page');
 
         if (response.data && response.data.event) {
@@ -102,6 +104,7 @@ const EditEvent = () => {
           headers: {
             'Content-Type': 'multipart/form-data', // Required for file uploads
           },
+          withCredentials: true, // Include cookies
         }
       );
 
