@@ -91,22 +91,38 @@ const login = async (req, res) => {
   }
 };
 
+//TODO:- Verify Users
+const verifyUser = async() => {
+  try {
+    
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message:"Error "
+    })
+    
+  }
+}
+
+
+// Logout Route
+
 const logout = async (req, res) => {
   try {
     // Clear the token cookie
     res.clearCookie("token", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      httpOnly: true, // Prevents client-side JS from accessing the cookie
+      secure: process.env.NODE_ENV === "production", // HTTPS in production
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax", //
     });
+    
 
-    // Send success response
-    return res
-      .status(200)
-      .json({ success: true, message: "Logout successful" });
+    // Send a success response
+    return res.status(200).json({ success: true, message: "Logout successful" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-export { register, login, logout };
+
+export { register, login,verifyUser, logout };

@@ -71,7 +71,7 @@ export const createEvent = async (req, res) => {
 
 // Get all events with pagination, search, and date filtering
 export const getAllEvents = async (req, res) => {
-  const { search, startDate, endDate, page = 1, limit = 3 } = req.query;
+  const { search, startDate, endDate, page = 1, limit = 3 } = req.query; // Default limit is 3
   const query = {};
 
   if (search) {
@@ -82,11 +82,8 @@ export const getAllEvents = async (req, res) => {
     const start = new Date(startDate);
     const end = new Date(endDate);
 
-    if (isNaN(start.getTime())) {
-      return res.status(400).json({ error: "Invalid startDate format." });
-    }
-    if (isNaN(end.getTime())) {
-      return res.status(400).json({ error: "Invalid endDate format." });
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return res.status(400).json({ error: "Invalid date format." });
     }
 
     query.eventDate = {
@@ -96,8 +93,8 @@ export const getAllEvents = async (req, res) => {
   }
 
   try {
-    const pageNumber = parseInt(page);
-    const limitNumber = Math.min(Math.max(parseInt(limit), 1), 100);
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10); // Use the limit sent from the frontend
 
     const totalEvents = await Event.countDocuments(query);
     const totalPages = Math.ceil(totalEvents / limitNumber);
@@ -115,9 +112,7 @@ export const getAllEvents = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching events:", error);
-    res
-      .status(500)
-      .json({ error: "Internal server error while fetching events." });
+    res.status(500).json({ error: "Internal server error while fetching events." });
   }
 };
 
@@ -145,16 +140,12 @@ export const updateEvent = async (req, res) => {
       eventDescription,
       eventLocation,
       existingFile, // Existing Cloudinary URL
-      
     } = req.body;
 
     let eventFile = existingFile; // Use existing file by default
-    console.log(existingFile, "existing file");
 
     // If a new file is uploaded
     if (req.file) {
-      console.log(existingFile, "existing file");
-      
       // Remove old file from Cloudinary only if it exists
       if (existingFile) {
         // Extract public ID from Cloudinary URL
@@ -173,25 +164,24 @@ export const updateEvent = async (req, res) => {
       }
 
       // Upload new file to Cloudinary
-      // const result = await new Promise((resolve, reject) => {
-      //   cloudinary.v2.uploader.upload_stream(
-      //     {
-      //       resource_type: eventType === 'video' ? 'video' : 'image',
-      //     },
-      //     (error, result) => {
-      //       if (error) {
-      //         reject(error);
-      //       } else {
-      //         resolve(result);
-      //       }
-      //     }
-      //   ).end(req.file.buffer); // Pass file buffer to Cloudinary
-      // });
+      const result = await new Promise((resolve, reject) => {
+        cloudinary.v2.uploader.upload_stream(
+          {
+            resource_type: eventType === 'video' ? 'video' : 'image',
+          },
+          (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
+          }
+        ).end(req.file.buffer); // Pass file buffer to Cloudinary
+      });
 
-      // eventFile = result.secure_url; // Save new Cloudinary URL
+      eventFile = result.secure_url; // Save new Cloudinary URL
     }
 
-    process.exit()
     // Update the event in the database
     const updatedEvent = await Event.findByIdAndUpdate(
       id,
@@ -215,7 +205,7 @@ export const updateEvent = async (req, res) => {
     console.error('Error updating event:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
-}
+};
 
 // Delete an event by ID
 export const deleteEvent = async (req, res) => {

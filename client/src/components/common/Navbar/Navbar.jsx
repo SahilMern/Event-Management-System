@@ -2,13 +2,28 @@ import { Link } from "react-router-dom";
 import { FaSignOutAlt } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../../redux/slice/AuthSlice";
+import axios from 'axios';
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user); // Get user state from Redux
 
-  const handleLogout = () => {
-    dispatch(logout()); // Logout the user
+
+  const handleLogout = async () => {
+    try {
+      // Call the logout API
+      const response = await axios.post('http://localhost:9080/api/auth/logout', {}, {
+        withCredentials: true,  // Ensure cookies are sent with the request
+      });
+  
+      // Check if the response is successful
+      if (response.data.success) {
+        console.log(response.data.message);
+        dispatch(logout()); 
+      }
+    } catch (error) {
+      console.error('Error logging out:', error.response ? error.response.data : error.message);
+    }
   };
 
   return (
@@ -65,7 +80,7 @@ const Navbar = () => {
                 {/* Logout Button */}
                 <button
                   onClick={handleLogout}
-                  className="cursor-pointer bg-[#f73d3d] text-white px-5 py-2 rounded-lg hover:bg-[#f73d3dd9] transition duration-300 flex items-center"
+                  className="cursor-pointer bg-[#000] text-white px-5 py-2 rounded-lg hover:bg-[#202020] transition duration-300 flex items-center"
                 >
                   <FaSignOutAlt className="mr-2" /> Logout
                 </button>
