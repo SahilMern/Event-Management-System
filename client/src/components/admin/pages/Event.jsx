@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getAllEvent } from "../../../helper/backend/backend";
 import Loading from "../../Loading";
@@ -89,6 +89,8 @@ const Event = () => {
   }
 
   return (
+    <>
+
     <div className="min-h-[80vh] p-4 sm:p-8 bg-gray-50 flex flex-col">
       <h1 className="text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-8 text-gray-800">
         Featured Events
@@ -240,6 +242,8 @@ const Event = () => {
         </div>
       )}
     </div>
+      <ToastContainer />
+      </>
   );
 };
 
