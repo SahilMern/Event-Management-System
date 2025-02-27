@@ -1,14 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import {
-  FaTachometerAlt,
-  FaUsers,
-  FaCalendarAlt,
-  FaCog,
-  FaSignOutAlt,
-  FaBars,
-  FaTimes,
-} from "react-icons/fa";
+import { FaUsers, FaCalendarAlt, FaBars, FaTimes } from "react-icons/fa";
 
 const SideBar = () => {
   const location = useLocation(); // Get current route location
@@ -26,16 +18,6 @@ const SideBar = () => {
       name: "Events",
       icon: <FaCalendarAlt className="mr-3" />,
     },
-    // {
-    //   path: "/admin/settings",
-    //   name: "Settings",
-    //   icon: <FaCog className="mr-3" />,
-    // },
-    // {
-    //   path: "/logout",
-    //   name: "Logout",
-    //   icon: <FaSignOutAlt className="mr-3" />,
-    // },
   ];
 
   return (
@@ -43,18 +25,19 @@ const SideBar = () => {
       {/* Toggle Button for Mobile */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="fixed top-4 left-4 p-2 bg-gray-800 text-white rounded-lg md:hidden z-50"
+        className="fixed top-20 left-4 p-2 bg-gray-800 text-white rounded-lg md:hidden z-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
+        aria-label="Toggle Sidebar"
       >
-        {isSidebarOpen ? <FaTimes /> : <FaBars />}
+        {isSidebarOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
       </button>
 
-      {/* Sidebar */}
+      {/* Sidebar - 25% width */}
       <div
-        className={`bg-gray-800 text-white w-64 flex-shrink-0 fixed h-screen transform transition-transform duration-300 ${
+        className={`bg-gray-800 text-white w-[80%] md:w-1/4 flex-shrink-0 h-screen transform transition-transform duration-300 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 z-40`} // z-40 to ensure sidebar is above overlay
+        } md:translate-x-0 fixed sm:fixed md:relative z-40`} // Fixed on sm, relative on md and above
       >
-        <div className="p-6">
+        <div className="p-6 border-b border-gray-700">
           <h2 className="text-2xl font-bold">Admin Panel</h2>
         </div>
         <nav className="mt-6">
@@ -63,11 +46,11 @@ const SideBar = () => {
               key={index}
               to={link.path}
               className={`flex items-center p-4 hover:bg-gray-700 transition duration-300 ${
-                location.pathname === link.path ? "bg-gray-700" : ""
+                location.pathname === link.path ? "bg-gray-700 font-semibold" : "text-gray-300"
               }`}
             >
               {link.icon}
-              {link.name}
+              <span>{link.name}</span>
             </Link>
           ))}
         </nav>
@@ -76,7 +59,7 @@ const SideBar = () => {
       {/* Overlay for Mobile */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0  md:hidden"
+          className=""
           onClick={() => setIsSidebarOpen(false)}
         ></div>
       )}

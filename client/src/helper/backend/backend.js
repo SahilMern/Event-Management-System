@@ -23,8 +23,4 @@ const updateUser = `${ApiUrl}/api/user`
 const ChangeUsersRole = `${ApiUrl}/api/user`;
 
 
-
-
-
-
 export { ApiUrl, register, loginApi,logoutApi,getAllEvent, getAllUsers, EditUsers ,ChangeUsersRole, updateUser , AddEventApi, EditEventApi, singleEventDetails};
