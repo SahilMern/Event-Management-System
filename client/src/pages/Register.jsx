@@ -7,43 +7,52 @@ import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 
 const Register = () => {
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
 
-  const {user} = useSelector((state) => state.auth)
-  console.log(user, "user");
-  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  //TODO:- Handling registration here
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(register, formData);
       if (response.status === 201) {
-        toast.success("Registration Successful! Redirecting to login...");
-        setTimeout(() => navigate("/login"), 2000);
+        toast.success("Registration Successful!");
+        setTimeout(() => navigate("/login"), 1000);
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Registration failed");
     }
   };
 
+  //TODO:-Redirects to the home page if the user is already logged in
   useEffect(() => {
     if (user) {
       navigate("/");
     }
-  
-  }, [user])
+  }, [user]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-10 rounded-lg shadow-lg max-w-sm w-full">
-        <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">Create an Account</h2>
+        <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">
+          Create an Account
+        </h2>
+
+        {/* //? Form Handling */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex flex-col">
-            <label htmlFor="name" className="text-sm text-gray-600 mb-2">Full Name</label>
+            <label htmlFor="name" className="text-sm text-gray-600 mb-2">
+              Full Name
+            </label>
             <input
               type="text"
               name="name"
@@ -56,7 +65,9 @@ const Register = () => {
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="email" className="text-sm text-gray-600 mb-2">Email</label>
+            <label htmlFor="email" className="text-sm text-gray-600 mb-2">
+              Email
+            </label>
             <input
               type="email"
               name="email"
@@ -69,7 +80,9 @@ const Register = () => {
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="password" className="text-sm text-gray-600 mb-2">Password</label>
+            <label htmlFor="password" className="text-sm text-gray-600 mb-2">
+              Password
+            </label>
             <input
               type="password"
               name="password"
@@ -92,7 +105,9 @@ const Register = () => {
         <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
             Already have an account?{" "}
-            <Link to="/login" className="text-blue-600 hover:underline">Login</Link>
+            <Link to="/login" className="text-blue-600 hover:underline">
+              Login
+            </Link>
           </p>
         </div>
       </div>

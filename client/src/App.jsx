@@ -32,13 +32,13 @@ const App = () => {
 
       <div className="min-div">
         <Routes>
-          {/* //? User Routes */}
+          {/* //! User Routes */}
           <Route path="/" element={<AllEvents />} />
           <Route path="/eventDetails/:id" element={<EventDetails />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
 
-          {/* //? Admin Routes */}
+          {/* //! Admin Routes */}
           <Route element={<ProtectedRoute roles={["admin"]} />}>
             <Route path="/admin" element={<Admin />}>
               <Route index element={<AdminDashBoard />} />

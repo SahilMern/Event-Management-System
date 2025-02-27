@@ -1,12 +1,12 @@
 import express from "express";
-import {  getAllUsers,
-    getSingleUser,
-    updateUser,
-    deleteUser,
-    changeUserRole, } from "../controllers/User.controller.js";
+import {
+  getAllUsers,
+  getSingleUser,
+  updateUser,
+  deleteUser,
+  changeUserRole,
+} from "../controllers/User.controller.js";
 const router = express.Router();
-
-
 
 // Routes
 router.get("/", getAllUsers); // Get all users

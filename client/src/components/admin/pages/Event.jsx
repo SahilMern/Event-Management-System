@@ -4,6 +4,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { getAllEvent } from "../../../helper/backend/backend";
+import Loading from "../../Loading";
 
 const Event = () => {
   const navigate = useNavigate();
@@ -27,11 +29,9 @@ const Event = () => {
         limit: 3,
       }).toString();
 
-      const response = await axios.get(
-        `http://localhost:9080/api/events?${queryParams}`,{
-          withCredentials:true
-        }
-      );
+      const response = await axios.get(`${getAllEvent}?${queryParams}`, {
+        withCredentials: true,
+      });
       setEvents(response.data.events);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -64,12 +64,13 @@ const Event = () => {
 
   const handleDelete = async (eventId) => {
     try {
-      const confirmDelete = await window.confirm("Are you sure you want to delete this event?")
+      const confirmDelete = await window.confirm(
+        "Are you sure you want to delete this event?"
+      );
       if (!confirmDelete) return;
-      
 
       await axios.delete(`http://localhost:9080/api/events/${eventId}`, {
-        withCredentials:true
+        withCredentials: true,
       });
       fetchEvents();
       toast.success("Event deleted successfully!");
@@ -80,9 +81,7 @@ const Event = () => {
   };
 
   if (loading) {
-    return (
-      <div className="text-center text-lg font-semibold">Loading events...</div>
-    );
+    return <Loading />;
   }
 
   if (error) {
@@ -95,6 +94,7 @@ const Event = () => {
         Featured Events
       </h1>
 
+      {/* Search Functionality */}
       <form className="mb-6 sm:mb-8 w-full mx-auto">
         <div className="flex flex-wrap gap-4">
           <input
@@ -119,7 +119,7 @@ const Event = () => {
           <button
             type="button"
             onClick={handleReset}
-            className="bg-gray-500 text-white p-2 rounded hover:bg-gray-600 text-sm sm:text-base"
+            className="bg-red-500 text-white p-2 rounded hover:bg-red-700 text-sm sm:text-base"
           >
             Reset
           </button>
@@ -131,7 +131,7 @@ const Event = () => {
         </div>
       </form>
 
-      <div className="flex-1">
+      <div className="flex-1 mt-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {events.length > 0 ? (
             events.map((event, index) => (
@@ -205,6 +205,7 @@ const Event = () => {
         </div>
       </div>
 
+      {/* Pagination Logic */}
       {events.length > 0 && (
         <div className="flex justify-center items-center mt-6 sm:mt-8 space-x-2">
           <button

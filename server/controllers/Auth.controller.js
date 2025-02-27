@@ -5,8 +5,6 @@ import jwt from "jsonwebtoken";
 //TODO:- User Register function
 const register = async (req, res) => {
   const { name, email, password } = req.body;
-  console.log(name, email, password);
-
   try {
     if (!name || !email || !password) {
       return res
@@ -14,6 +12,7 @@ const register = async (req, res) => {
         .json({ success: false, message: "All fields are required" });
     }
 
+    //
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res
@@ -60,7 +59,7 @@ const login = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Invalid credentials" });
 
-    // JWT Token Generate
+    //? JWT Token Generate
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
@@ -68,13 +67,12 @@ const login = async (req, res) => {
     );
 
     res.cookie("token", token, {
-      httpOnly: true, // Prevents client-side JS from accessing the cookie
-      secure: process.env.NODE_ENV === "production", // HTTPS in production
-      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax", // Adjust for development
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === "production", 
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",  
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
 
-    // Send success response
     return res.json({
       success: true,
       message: "Login successful",
@@ -92,37 +90,58 @@ const login = async (req, res) => {
 };
 
 //TODO:- Verify Users
-const verifyUser = async() => {
+const verifyUser = async (req, res) => {
   try {
-    
+    const userId = req.user.id;
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User ID not found" });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "User verified successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({
-      message:"Error "
-    })
-    
+      success: false,
+      message: "Internal server error while verifying user",
+    });
   }
-}
+};
 
-
-// Logout Route
-
+//TODO:- Logout Route
 const logout = async (req, res) => {
   try {
-    // Clear the token cookie
     res.clearCookie("token", {
-      httpOnly: true, // Prevents client-side JS from accessing the cookie
-      secure: process.env.NODE_ENV === "production", // HTTPS in production
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === "production", 
       sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax", //
     });
-    
 
-    // Send a success response
-    return res.status(200).json({ success: true, message: "Logout successful" });
+    return res
+      .status(200)
+      .json({ success: true, message: "Logout successful" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
-export { register, login,verifyUser, logout };
+export { register, login, verifyUser, logout };

@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FaEdit, FaTrash, FaUserCog } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  ChangeUsersRole,
+  EditUsers,
+  getAllUsers,
+} from "../../../../helper/backend/backend";
+import Loading from "../../../Loading";
 
 const Users = () => {
-  const [users, setUsers] = useState([]); // State to store users
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
-  const [actionLoading, setActionLoading] = useState(false); // Loading state for actions
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [actionLoading, setActionLoading] = useState(false);
 
-  // Fetch all users
+  //TODO:- Fetch All User Details
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:9080/api/user");
+      const response = await axios.get(getAllUsers);
       setUsers(response.data.data);
       setLoading(false);
     } catch (error) {
@@ -23,15 +29,16 @@ const Users = () => {
     }
   };
 
-  // Delete a user
+  //TODO:- Delete User
   const handleDelete = async (userId) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this user?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
     if (!confirmDelete) return;
-
     setActionLoading(true);
     try {
-      await axios.delete(`http://localhost:9080/api/user/${userId}`);
-      setUsers(users.filter((user) => user._id !== userId)); // Remove user from state
+      await axios.delete(`${EditUsers}/${userId}`);
+      setUsers(users.filter((user) => user._id !== userId));
       toast.success("User deleted successfully!");
     } catch (error) {
       setError(error.response?.data?.message || error.message);
@@ -41,17 +48,18 @@ const Users = () => {
     }
   };
 
-  // Change user role
+  //TODO:- Changing User Role
   const handleRoleChange = async (userId, newRole) => {
-    const confirmChange = window.confirm(`Change this user's role to ${newRole}?`);
+    const confirmChange = window.confirm(
+      `Change this user's role to ${newRole}?`
+    );
     if (!confirmChange) return;
 
     setActionLoading(true);
     try {
-      const response = await axios.patch(
-        `http://localhost:9080/api/user/${userId}/change-role`,
-        { role: newRole }
-      );
+      await axios.patch(`${ChangeUsersRole}/${userId}/change-role`, {
+        role: newRole,
+      });
       setUsers(
         users.map((user) =>
           user._id === userId ? { ...user, role: newRole } : user
@@ -66,13 +74,14 @@ const Users = () => {
     }
   };
 
-  // Fetch users on component mount
   useEffect(() => {
     fetchUsers();
   }, []);
 
   if (loading) {
-    return <div className="text-center text-lg font-semibold">Loading users...</div>;
+    return (
+      <Loading />
+    );
   }
 
   if (error) {
@@ -83,7 +92,6 @@ const Users = () => {
     <div className="p-4 sm:p-8">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6">Manage Users</h1>
 
-      {/* Users Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white rounded-lg shadow-lg">
           <thead className="bg-gray-50">

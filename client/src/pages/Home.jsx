@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { getAllEvent } from "../helper/backend/backend";
+import Loading from "../components/Loading";
 
 const AllEvents = () => {
   const navigate = useNavigate();
@@ -15,19 +17,20 @@ const AllEvents = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  //? Fetching Event Data here
   const fetchEvents = async () => {
-    setError(null); // Clear previous errors
+    setError(null); 
     try {
       const queryParams = new URLSearchParams({
         search,
         startDate,
         endDate,
         page,
-        limit: 3, // Add limit here
+        limit: 3, // Setting limit accordingly our requirement
       }).toString();
 
       const response = await axios.get(
-        `http://localhost:9080/api/events?${queryParams}`,
+        `${getAllEvent}?${queryParams}`,
         {
           withCredentials: true,
         }
@@ -47,12 +50,14 @@ const AllEvents = () => {
     }
   };
 
+  //? Fetch data on query
   useEffect(() => {
     if (user) {
       fetchEvents();
     }
   }, [search, startDate, endDate, page, user]);
 
+  //Redirect to login If user not register
   useEffect(() => {
     if (!user) {
       navigate("/login");
@@ -70,7 +75,7 @@ const AllEvents = () => {
     setStartDate("");
     setEndDate("");
     setPage(1);
-    fetchEvents(); // Fetch events after resetting
+    fetchEvents(); // Fetch events after resetting Every thing
   };
 
   const handleCardClick = (eventId) => {
@@ -80,9 +85,7 @@ const AllEvents = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="text-center text-lg font-semibold text-gray-600">
-          Loading events...
-        </div>
+        <Loading />
       </div>
     );
   }
@@ -172,9 +175,7 @@ const AllEvents = () => {
                   <strong>Date:</strong>{" "}
                   {new Date(event.eventDate).toLocaleDateString()}
                 </p>
-                <p className="text-gray-600 text-sm sm:text-base mb-3">
-                  <strong>Attendees:</strong> {event.attendees}
-                </p>
+               
                 <p className="text-gray-600 text-sm sm:text-base mb-4 line-clamp-2">
                   {event.eventDescription}
                 </p>

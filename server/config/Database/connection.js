@@ -1,9 +1,13 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
 
+const databaseUrl = process.env.databaseurl;
+
+//TODO:- Node js && mongodb Connections
 const mongoDbConnection = async () => {
   try {
-    const databaseUrl = "mongodb://localhost:27017/aurus";
-    await mongoose.connect(databaseUrl);
+    await mongoose.connect(databaseUrl, {});
     console.log("Database connected successfully!");
   } catch (error) {
     console.error("Database connection error:", error);
@@ -11,4 +15,4 @@ const mongoDbConnection = async () => {
   }
 };
 
-mongoDbConnection()
+mongoDbConnection();
