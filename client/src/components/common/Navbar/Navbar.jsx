@@ -1,45 +1,50 @@
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate hook
-import { FaSignOutAlt } from "react-icons/fa";
-import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../../../../redux/slice/AuthSlice";
 import axios from 'axios';
+import { Link, useNavigate } from "react-router-dom";
+import { FaSignOutAlt, FaBars, FaTimes } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
+import { useState } from "react";
+
+import { logout } from "../../../../redux/slice/AuthSlice";
+import { logoutApi } from "../../../helper/backend/backend";
 
 const Navbar = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user); // Get user state from Redux
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const user = useSelector((state) => state.auth.user);
+  const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
-      // Call the logout API
-      const response = await axios.post('http://localhost:9080/api/auth/logout', {}, {
-        withCredentials: true,  // Ensure cookies are sent with the request
+      const response = await axios.post(`${logoutApi}`, {}, {
+        withCredentials: true,
       });
-  
-      // Check if the response is successful
+
       if (response.data.success) {
         console.log(response.data.message);
-        dispatch(logout());  // Dispatch logout action to Redux store
-        navigate("/login");  // Redirect to the login page after logout
+        dispatch(logout());
+        navigate("/login");
       }
     } catch (error) {
       console.error('Error logging out:', error.response ? error.response.data : error.message);
     }
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     <nav className="bg-white shadow-md w-full z-10 top-0 left-0">
-      <div className="container mx-auto px-6 py-4 md:px-12 md:py-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex justify-between items-center">
-          {/* Logo and Event Name */}
           <Link to="/" className="flex items-center space-x-2">
-            <img src="/event.png" alt="Event Logo" className="h-12 w-12" />
-            <span className="text-3xl font-semibold text-gray-800 hover:text-blue-600 transition duration-300">
+            <img src="/event.png" alt="Event Logo" className="h-8 w-8" />
+            <span className="text-xl sm:text-2xl font-semibold text-gray-800 hover:text-blue-600 transition duration-300 uppercase">
               Event
             </span>
           </Link>
 
-          {/* Nav Links */}
+          {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8 items-center">
             <Link
               to="/"
@@ -63,11 +68,10 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Auth Buttons */}
-          <div className="flex items-center space-x-6">
+          {/* User Actions (Visible on md and larger screens) */}
+          <div className="hidden md:flex items-center space-x-6">
             {user ? (
               <>
-                {/* Dashboard Button */}
                 {user.role === "admin" && (
                   <Link
                     to="/admin"
@@ -77,10 +81,10 @@ const Navbar = () => {
                   </Link>
                 )}
 
-                {/* Logout Button */}
                 <button
                   onClick={handleLogout}
-                  className="cursor-pointer bg-[#000] text-white px-5 py-2 rounded-lg hover:bg-[#202020] transition duration-300 flex items-center"
+                  className="cursor-pointer bg-black text-white px-5 py-2 rounded-lg hover:bg-gray-800 transition duration-300 flex items-center"
+                  aria-label="Logout"
                 >
                   <FaSignOutAlt className="mr-2" /> Logout
                 </button>
@@ -89,20 +93,81 @@ const Navbar = () => {
               <>
                 <Link
                   to="/login"
-                  className="inline-block px-5 py-2 bg-black text-white rounded-lg hover:bg-blue-600 transition duration-300 text-lg font-medium"
+                  className="inline-block px-5 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition duration-300 text-lg font-medium"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="inline-block px-5 py-2 bg-black text-white rounded-lg hover:bg-blue-600 transition duration-300 text-lg font-medium"
+                  className="inline-block px-5 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition duration-300 text-lg font-medium"
                 >
                   Register
                 </Link>
               </>
             )}
           </div>
+
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={toggleMobileMenu}
+            className="md:hidden text-gray-800 hover:text-blue-600 focus:outline-none"
+            aria-label="Toggle Menu"
+          >
+            {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          </button>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden mt-4">
+            <Link
+              to="/"
+              className="block text-gray-800 hover:text-blue-600 transition duration-300 text-lg uppercase font-medium py-2"
+              onClick={toggleMobileMenu}
+            >
+              Home
+            </Link>
+
+            <Link
+              to="/about"
+              className="block text-gray-800 hover:text-blue-600 transition duration-300 text-lg uppercase font-medium py-2"
+              onClick={toggleMobileMenu}
+            >
+              About Us
+            </Link>
+
+            <Link
+              to="/contact"
+              className="block text-gray-800 hover:text-blue-600 transition duration-300 text-lg uppercase font-medium py-2"
+              onClick={toggleMobileMenu}
+            >
+              Contact Us
+            </Link>
+
+            {/* Show Dashboard and Logout in Mobile Menu */}
+            {user && (
+              <>
+                {user.role === "admin" && (
+                  <Link
+                    to="/admin"
+                    className="block text-gray-800 hover:text-blue-600 transition duration-300 text-lg uppercase font-medium py-2"
+                    onClick={toggleMobileMenu}
+                  >
+                    Dashboard
+                  </Link>
+                )}
+
+                <button
+                  onClick={handleLogout}
+                 className="cursor-pointer bg-black text-white px-5 py-2 rounded-lg hover:bg-gray-800 transition duration-300 flex items-center"
+                  aria-label="Logout"
+                >
+                  Logout
+                </button>
+              </>
+            )}
+          </div>
+        )}
       </div>
     </nav>
   );

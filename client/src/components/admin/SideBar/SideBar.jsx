@@ -26,16 +26,16 @@ const SideBar = () => {
       name: "Events",
       icon: <FaCalendarAlt className="mr-3" />,
     },
-    {
-      path: "/admin/settings",
-      name: "Settings",
-      icon: <FaCog className="mr-3" />,
-    },
-    {
-      path: "/logout",
-      name: "Logout",
-      icon: <FaSignOutAlt className="mr-3" />,
-    },
+    // {
+    //   path: "/admin/settings",
+    //   name: "Settings",
+    //   icon: <FaCog className="mr-3" />,
+    // },
+    // {
+    //   path: "/logout",
+    //   name: "Logout",
+    //   icon: <FaSignOutAlt className="mr-3" />,
+    // },
   ];
 
   return (
@@ -43,7 +43,7 @@ const SideBar = () => {
       {/* Toggle Button for Mobile */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="fixed top-4 left-4 p-2 bg-gray-800 text-white rounded-lg md:hidden z-50"
+        className="fixed top-24 left-4 p-2 bg-gray-800 text-white rounded-lg md:hidden z-50"
       >
         {isSidebarOpen ? <FaTimes /> : <FaBars />}
       </button>

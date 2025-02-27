@@ -112,7 +112,9 @@ export const getAllEvents = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching events:", error);
-    res.status(500).json({ error: "Internal server error while fetching events." });
+    res
+      .status(500)
+      .json({ error: "Internal server error while fetching events." });
   }
 };
 
@@ -144,39 +146,42 @@ export const updateEvent = async (req, res) => {
 
     let eventFile = existingFile; // Use existing file by default
 
+    // process.exit()
     // If a new file is uploaded
     if (req.file) {
       // Remove old file from Cloudinary only if it exists
       if (existingFile) {
         // Extract public ID from Cloudinary URL
-        const urlParts = existingFile.split('/');
+        const urlParts = existingFile.split("/");
         const publicId = urlParts
-          .slice(urlParts.indexOf('upload') + 1) // Get the part after "upload"
-          .join('/') // Join the remaining parts
-          .split('.')[0]; // Remove file extension
+          .slice(urlParts.indexOf("upload") + 1) // Get the part after "upload"
+          .join("/") // Join the remaining parts
+          .split(".")[0]; // Remove file extension
 
-        console.log(publicId, 'Public ID to delete');
+        console.log(publicId, "Public ID to delete");
 
         // Delete old file from Cloudinary
         await cloudinary.v2.uploader.destroy(publicId, {
-          resource_type: eventType === 'video' ? 'video' : 'image',
+          resource_type: eventType === "video" ? "video" : "image",
         });
       }
 
       // Upload new file to Cloudinary
       const result = await new Promise((resolve, reject) => {
-        cloudinary.v2.uploader.upload_stream(
-          {
-            resource_type: eventType === 'video' ? 'video' : 'image',
-          },
-          (error, result) => {
-            if (error) {
-              reject(error);
-            } else {
-              resolve(result);
+        cloudinary.v2.uploader
+          .upload_stream(
+            {
+              resource_type: eventType === "video" ? "video" : "image",
+            },
+            (error, result) => {
+              if (error) {
+                reject(error);
+              } else {
+                resolve(result);
+              }
             }
-          }
-        ).end(req.file.buffer); // Pass file buffer to Cloudinary
+          )
+          .end(req.file.buffer); // Pass file buffer to Cloudinary
       });
 
       eventFile = result.secure_url; // Save new Cloudinary URL
@@ -198,12 +203,12 @@ export const updateEvent = async (req, res) => {
     );
 
     res.status(200).json({
-      message: 'Event updated successfully',
+      message: "Event updated successfully",
       event: updatedEvent,
     });
   } catch (error) {
-    console.error('Error updating event:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error updating event:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 

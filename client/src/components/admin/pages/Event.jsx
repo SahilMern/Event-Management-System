@@ -64,10 +64,9 @@ const Event = () => {
 
   const handleDelete = async (eventId) => {
     try {
-      const confirmDelete = toast.confirm(
-        "Are you sure you want to delete this event?"
-      );
+      const confirmDelete = await window.confirm("Are you sure you want to delete this event?")
       if (!confirmDelete) return;
+      
 
       await axios.delete(`http://localhost:9080/api/events/${eventId}`, {
         withCredentials:true

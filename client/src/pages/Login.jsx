@@ -1,14 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import { loginSuccess } from "../../redux/slice/AuthSlice";
-import { login } from "../helper/backend/backend.js";
+import { loginApi } from "../helper/backend/backend";
+// Replace with actual API endpoint
 
 const Login = () => {
+  const { user } = useSelector((state) => state.auth);
+  // console.log(user, "user");
+  
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false); // For handling loading state during login
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -18,9 +23,10 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const response = await axios.post(login, formData, {
-        withCredentials: true, //? Include cookies in the request 
+      const response = await axios.post(`${loginApi}`, formData, {
+        withCredentials: true, // Include cookies in the request
       });
 
       // Dispatch login success action
@@ -36,8 +42,17 @@ const Login = () => {
     } catch (err) {
       // Show error message
       toast.error(err.response?.data?.message || "Invalid credentials");
+    } finally {
+      setLoading(false); // Stop loading state
     }
   };
+
+  // Redirect if user is already logged in
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -74,14 +89,18 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full py-3 bg-blue-600 text-white rounded-lg text-lg font-semibold hover:bg-blue-700 transition duration-300"
+            disabled={loading} // Disable the button while loading
+            className={`w-full py-3 ${loading ? "bg-gray-400" : "bg-blue-600"} text-white rounded-lg text-lg font-semibold hover:bg-blue-700 transition duration-300`}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
         <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
-            Don't have an account? <a href="/register" className="text-blue-600 hover:underline">Sign up</a>
+            Don't have an account?{" "}
+            <a href="/register" className="text-blue-600 hover:underline">
+              Sign up
+            </a>
           </p>
         </div>
       </div>

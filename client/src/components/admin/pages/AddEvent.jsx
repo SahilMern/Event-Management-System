@@ -200,7 +200,7 @@ const AddEvent = () => {
       <img
         src={previewUrl}
         alt="Event Preview"
-        className=" h-[8rem] w-full rounded-2xl" // 2rem is equivalent to 32px, which is 8 units in Tailwind (1rem = 16px)
+        className=" h-[8rem]  rounded-2xl" // 2rem is equivalent to 32px, which is 8 units in Tailwind (1rem = 16px)
       />
     ) : (
       <video

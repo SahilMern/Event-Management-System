@@ -27,8 +27,9 @@ const AllEvents = () => {
       }).toString();
 
       const response = await axios.get(
-        `http://localhost:9080/api/events?${queryParams}`,{
-          withCredentials:true
+        `http://localhost:9080/api/events?${queryParams}`,
+        {
+          withCredentials: true,
         }
       );
 
@@ -40,17 +41,16 @@ const AllEvents = () => {
       setEvents(data.events);
       setTotalPages(data.totalPages);
     } catch (error) {
-      // console.error(error);
-      setError(error.message);
+      setError(error.response?.data?.message || error.message);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    // if (user) {
+    if (user) {
       fetchEvents();
-    // }
+    }
   }, [search, startDate, endDate, page, user]);
 
   useEffect(() => {
@@ -59,9 +59,6 @@ const AllEvents = () => {
     }
   }, [user, navigate]);
 
-  useEffect(() => {
-
-  },[])
   const handleSearch = (e) => {
     e.preventDefault();
     setPage(1);
@@ -109,9 +106,9 @@ const AllEvents = () => {
       {/* Search and Filter Form */}
       <form
         onSubmit={handleSearch}
-        className="mb-8 w-[80%] mx-auto bg-white p-6 rounded-xl shadow-md"
+        className="mb-8 w-full max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md"
       >
-        <div className="flex flex-wrap gap-4 justify-between">
+        <div className="flex flex-col sm:flex-row gap-4 justify-between">
           <input
             type="text"
             placeholder="Search by event name"
@@ -134,7 +131,7 @@ const AllEvents = () => {
           <button
             type="button"
             onClick={handleReset}
-            className="bg-black text-white p-3 rounded-md hover:bg-gray-600 transition duration-200 text-sm w-[8rem]"
+            className="bg-black text-white p-3 rounded-md hover:bg-gray-600 transition duration-200 text-sm w-full sm:w-auto"
           >
             Reset
           </button>
@@ -245,61 +242,3 @@ const AllEvents = () => {
 };
 
 export default AllEvents;
-
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import { useNavigate } from "react-router-dom";
-// import { useDispatch } from "react-redux";
-// import { logout } from "../../redux/slice/AuthSlice";
-// import Cookies from "js-cookie";
-// const AllEvents = () => {
-//   const [error, setError] = useState(null);
-//   const [userData, setUserData] = useState(null);
-//   const navigate = useNavigate();
-//   const dispatch = useDispatch(); // Redux dispatch
-
-//   useEffect(() => {
-//     const verifyUser = async () => {
-//       try {
-//         const response = await axios.get(
-//           "http://localhost:9080/api/auth/verifyUser",
-//           { withCredentials: true }
-//         );
-//         setUserData(response.data.user); // If user is authenticated, set data
-//       } catch (error) {
-//         console.log(error);
-
-//         // Clear user data and token from Redux and cookies if authentication fails
-//         Cookies.remove("token");
-//         dispatch(logout()); // Dispatch logout action
-//         // Optionally, handle errors like token expiration
-//         // if (error.response && error.response.status === 401) {
-//         //   // Token expired or invalid
-//         //   setError("Session expired. Please log in again.");
-//         // } else {
-//         //   // Handle other errors
-//         //   setError("An error occurred. Please try again.");
-//         // }
-
-//         // Redirect to login page
-//         navigate("/login");
-//       }
-//     };
-
-//     verifyUser();
-//   }, [navigate, dispatch]); // Add dispatch in the dependency array
-
-//   return (
-//     <div>
-//       {error && <p style={{ color: "red" }}>{error}</p>}
-//       {userData && <p>Welcome, {userData.name}</p>}
-//       {!error && !userData && <p>Loading...</p>}
-//     </div>
-//   );
-// };
-
-// export default AllEvents;
-
-// mai ek project bana rah hu role based event manegment system mi chahat hu usme
-// admin events add delete edit and view kar sake
-// or authenticat user he usse  / par usse view kar sake or agar vo authenticate nahi hai to vo /login par redirect ho jaye

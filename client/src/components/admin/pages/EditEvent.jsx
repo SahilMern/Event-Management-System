@@ -15,6 +15,7 @@ const EditEvent = () => {
     eventFile: null, // For new file upload
     eventDescription: '',
     eventLocation: '',
+    myname:"saaa"
   });
   const [previewUrl, setPreviewUrl] = useState(null); // For preview URL
   const [loading, setLoading] = useState(false); // Loading state
@@ -88,6 +89,7 @@ const EditEvent = () => {
     formData.append('eventDescription', eventData.eventDescription);
     formData.append('eventLocation', eventData.eventLocation);
   
+
     // Always append the existing file URL
     if (eventData.eventFile && typeof eventData.eventFile === 'string') {
       formData.append('existingFile', eventData.eventFile);

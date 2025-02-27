@@ -8,3 +8,10 @@ Mongodb
 ExpressJs
 TailwindCss(for css)
 cloudinary(cloud storage for storing image and video)
+
+How to run project:-
+Frontend:-
+Install packages
+
+Backend:- 
+Install packages and setup the clodunary config 

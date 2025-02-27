@@ -13,11 +13,11 @@ const authSlice = createSlice({
   reducers: {
     loginSuccess: (state, action) => {
       state.user = action.payload.user;
-      state.token = action.payload.token; // Ensure token is stored
+      // state.token = action.payload.token; 
     },
     logout: (state) => {
       state.user = null;
-      state.token = null;
+      // state.token = null;
     },
   },
 });

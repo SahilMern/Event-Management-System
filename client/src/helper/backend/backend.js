@@ -4,11 +4,13 @@ const ApiUrl = "http://localhost:9080";
 //TODO:- Auth Backend Urls
 const ApiurlAuth = `${ApiUrl}/api/auth`;
 const register = `${ApiurlAuth}/register`;
-const login = `${ApiurlAuth}/login`;
+const loginApi = `${ApiurlAuth}/login`;
+const logoutApi = `${ApiurlAuth}/logout`;
+
 
 //TODO:- Events Backend Urls
 const ApiurlEvent = `${ApiUrl}/api/events`;
 const getAllProducts = `${ApiUrl}`
 
 
-export { ApiUrl, register, login, getAllProducts };
+export { ApiUrl, register, loginApi,logoutApi, getAllProducts };
