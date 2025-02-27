@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { updateUser } from "../../../../helper/backend/backend";
+import {  EditUsers, updateUser } from "../../../../helper/backend/backend";
 import Loading from "../../../Loading";
 
 const UserEdits = () => {
@@ -17,7 +17,7 @@ const UserEdits = () => {
   //TODO:- Fetch User Details
   const fetchUser = async () => {
     try {
-      const response = await axios.get(`http://localhost:9080/api/user/${id}`);
+      const response = await axios.get(`${EditUsers}/${id}`);
       setUser(response.data.data);
       setLoading(false);
     } catch (error) {

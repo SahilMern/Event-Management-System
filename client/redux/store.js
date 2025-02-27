@@ -1,8 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slice/AuthSlice";
 import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // Local Storage ke liye
-// import { getDefaultMiddleware } from "@reduxjs/toolkit"; // Middleware ke liye
+import storage from "redux-persist/lib/storage";
 
 const persistConfig = {
   key: "auth",

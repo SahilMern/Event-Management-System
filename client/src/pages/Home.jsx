@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getAllEvent } from "../helper/backend/backend";
+import { eventApis } from "../helper/backend/backend";
 import Loading from "../components/Loading";
 
 const AllEvents = () => {
@@ -17,32 +17,29 @@ const AllEvents = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  //? Fetching Event Data here
+  // Fetch events from API
   const fetchEvents = async () => {
-    setError(null); 
+    setError(null); // Reset any previous errors
+    setLoading(true); // Ensure loading is set to true while fetching
     try {
       const queryParams = new URLSearchParams({
         search,
         startDate,
         endDate,
         page,
-        limit: 3, // Setting limit accordingly our requirement
+        limit: 3, // Limit events per page
       }).toString();
 
-      const response = await axios.get(
-        `${getAllEvent}?${queryParams}`,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get(`${eventApis}?${queryParams}`, {
+        withCredentials: true,
+      });
 
-      if (response.status !== 200) {
+      if (response.status === 200) {
+        setEvents(response.data.events);
+        setTotalPages(response.data.totalPages);
+      } else {
         throw new Error("Error fetching events.");
       }
-
-      const data = response.data;
-      setEvents(data.events);
-      setTotalPages(data.totalPages);
     } catch (error) {
       setError(error.response?.data?.message || error.message);
     } finally {
@@ -50,14 +47,14 @@ const AllEvents = () => {
     }
   };
 
-  //? Fetch data on query
+  // Trigger fetchEvents whenever relevant state variables change
   useEffect(() => {
     if (user) {
       fetchEvents();
     }
   }, [search, startDate, endDate, page, user]);
 
-  //Redirect to login If user not register
+  // Redirect to login if no user is logged in
   useEffect(() => {
     if (!user) {
       navigate("/login");
@@ -66,8 +63,7 @@ const AllEvents = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setPage(1);
-    fetchEvents();
+    setPage(1); // Reset to page 1 when a search is initiated
   };
 
   const handleReset = () => {
@@ -75,7 +71,6 @@ const AllEvents = () => {
     setStartDate("");
     setEndDate("");
     setPage(1);
-    fetchEvents(); // Fetch events after resetting Every thing
   };
 
   const handleCardClick = (eventId) => {
@@ -175,7 +170,6 @@ const AllEvents = () => {
                   <strong>Date:</strong>{" "}
                   {new Date(event.eventDate).toLocaleDateString()}
                 </p>
-               
                 <p className="text-gray-600 text-sm sm:text-base mb-4 line-clamp-2">
                   {event.eventDescription}
                 </p>

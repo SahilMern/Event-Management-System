@@ -24,6 +24,9 @@ import UserEdits from "./components/admin/pages/Users/UserEdits";
 
 // Not-found page
 import NotFound from "./pages/NotFound";
+import About from "./pages/About";
+import SingleEventDetails from "./components/admin/pages/SingleEventDetails";
+import EventSingleDetails from "./components/admin/pages/EventSingleDetails";
 
 const App = () => {
   return (
@@ -38,6 +41,10 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
 
+
+          <Route path="/about" element={<About />} />
+
+
           {/* //! Admin Routes */}
           <Route element={<ProtectedRoute roles={["admin"]} />}>
             <Route path="/admin" element={<Admin />}>
@@ -51,6 +58,9 @@ const App = () => {
               <Route path="events" element={<Event />} />
               <Route path="addevent" element={<AddEvent />} />
               <Route path="edit-event/:id" element={<EditEvent />} />
+              {/* <Route path="/adminevent/:id" element={<EventSingleDetails />} /> */}
+
+
             </Route>
           </Route>
 

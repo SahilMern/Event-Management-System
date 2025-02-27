@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getAllEvent } from "../../../helper/backend/backend";
+import { eventApis, getAllEvent } from "../../../helper/backend/backend";
 import Loading from "../../Loading";
 
 const Event = () => {
@@ -69,7 +69,7 @@ const Event = () => {
       );
       if (!confirmDelete) return;
 
-      await axios.delete(`http://localhost:9080/api/events/${eventId}`, {
+      await axios.delete(`${eventApis}/${eventId}`, {
         withCredentials: true,
       });
       fetchEvents();

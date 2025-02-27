@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AddEventApi } from "../../../helper/backend/backend";
+import { eventApis } from "../../../helper/backend/backend";
 
 const AddEvent = () => {
   const [eventName, setEventName] = useState("");
@@ -54,7 +54,7 @@ const AddEvent = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        AddEventApi,
+        eventApis,
         formData,
         {
           headers: {

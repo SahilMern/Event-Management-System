@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, NavLink } from "react-router-dom";
 import axios from "axios";
 import Loading from "../components/Loading";
-import { singleEventDetails } from "../helper/backend/backend";
+import { eventApis } from "../helper/backend/backend";
 
 const EventDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Hook to handle navigation
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,8 +14,9 @@ const EventDetails = () => {
   const fetchEventDetails = async () => {
     try {
       const response = await axios.get(
-        `${singleEventDetails}/${id}`,{
-          withCredentials:true
+        `${eventApis}/${id}`,
+        {
+          withCredentials: true,
         }
       );
       // console.log(response.data.event);
@@ -27,7 +28,7 @@ const EventDetails = () => {
     }
   };
 
-  //TODO:- Fetching Single Event Details
+  // Fetching Single Event Details
   useEffect(() => {
     setTimeout(() => {
       fetchEventDetails();
@@ -42,7 +43,7 @@ const EventDetails = () => {
     );
   }
 
-  //Any Error
+  // Any Error
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -93,7 +94,7 @@ const EventDetails = () => {
               </div>
 
               <div className="space-y-2">
-                <p className="text-sm text-gray-500">Loaction</p>
+                <p className="text-sm text-gray-500">Location</p>
                 <p className="text-2xl font-semibold text-gray-900">
                   {event.eventLocation}
                 </p>
@@ -116,14 +117,14 @@ const EventDetails = () => {
           </div>
         </div>
 
-
         {/* Go to previous page */}
         <div className="text-center mt-8">
-          <NavLink to={"/"}>
-            <button className="px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition duration-300 transform hover:scale-105">
-              Go Back
-            </button>
-          </NavLink>
+          <button
+            onClick={() => navigate(-1)} // Navigate back to previous page
+            className="px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition duration-300 transform hover:scale-105"
+          >
+            Go Back
+          </button>
         </div>
       </div>
     </div>

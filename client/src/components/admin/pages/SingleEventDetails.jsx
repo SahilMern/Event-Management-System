@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { eventApis } from "../../../helper/backend/backend";
 
-const EventDetail = () => {
+const SingleEventDetails = () => {
   const { id } = useParams(); // Get event ID from URL
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -12,7 +13,7 @@ const EventDetail = () => {
     const fetchEvent = async () => {
       try {
         const response = await fetch(
-          `http://localhost:9080/api/getEvent/${id}`
+          `${eventApis}/${id}`
         );
         if (!response.ok) {
           throw new Error("Event not found.");
@@ -78,8 +79,7 @@ const EventDetail = () => {
             <strong>Attendees:</strong> {event.attendees}
           </p>
           <p className="text-gray-600 text-sm sm:text-base">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            <strong>Description:</strong> {event.eventDescription || "No description available."}
           </p>
         </div>
       </div>
@@ -87,4 +87,4 @@ const EventDetail = () => {
   );
 };
 
-export default EventDetail;
+export default SingleEventDetails;

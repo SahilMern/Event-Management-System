@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { EditEventApi } from "../../../helper/backend/backend";
+import { eventApis } from "../../../helper/backend/backend";
 
 const EditEvent = () => {
   const { id } = useParams();
@@ -21,11 +21,11 @@ const EditEvent = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  //TODO:- Fetching Event data
+  // Fetching Event data
   useEffect(() => {
     const fetchEventData = async () => {
       try {
-        const response = await axios.get(`${EditEventApi}/${id}`, {
+        const response = await axios.get(`${eventApis}/${id}`, {
           withCredentials: true,
         });
         if (response.data && response.data.event) {
@@ -61,11 +61,21 @@ const EditEvent = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setEventData((prev) => ({ ...prev, eventFile: file }));
-    const fileUrl = URL.createObjectURL(file);
-    setPreviewUrl(fileUrl);
+
+    // Ensure the file is properly read before setting the preview URL
+    const reader = new FileReader();
+    
+    reader.onloadend = () => {
+      setPreviewUrl(reader.result); // Set preview URL after the file is loaded
+    };
+
+    if (file) {
+      // Read the file as a data URL
+      reader.readAsDataURL(file);
+    }
   };
 
-  //TODO:- Handing Form submission
+  // Handling Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -84,7 +94,7 @@ const EditEvent = () => {
     }
     try {
       const response = await axios.put(
-        `http://localhost:9080/api/events/${id}`,
+        `${eventApis}/${id}`,
         formData,
         {
           headers: {
@@ -188,11 +198,12 @@ const EditEvent = () => {
               <img
                 src={previewUrl}
                 alt="Preview"
-                className=" h-[16rem] object-cover rounded-lg"
+                className="h-[16rem] object-cover rounded-lg"
               />
             ) : (
               <video controls className="w-full h-auto max-h-64 rounded-lg">
                 <source src={previewUrl} type="video/mp4" />
+                Your browser does not support the video tag.
               </video>
             )}
           </div>
