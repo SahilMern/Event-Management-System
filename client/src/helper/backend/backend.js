@@ -1,9 +1,10 @@
-const ApiUrl = process.env.REACT_APP_API_URL || "http://localhost:9180";
+
+const ApiUrl = import.meta.env.Backend_APP_API_URL || "http://localhost:9080";
 // const ApiUrl = "http://localhost:9080";
 
 //Common Api Routes for Event Curd
 const eventApis = `${ApiUrl}/api/events`;
-
+const getAllEvent = `${ApiUrl}/api/events`;
 //! Wait to change
 
 //TODO:- User Handle by admin like curd
@@ -33,4 +34,5 @@ export {
   updateUser,
   EditUser,
   eventApis,
+  getAllEvent
 };
