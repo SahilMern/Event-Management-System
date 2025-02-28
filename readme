@@ -1,19 +1,22 @@
-# Project Name: - Event Management system
+# Project Name: - Role Based Event Management system 
 
 # Technology I Used: -
+
 React(Vite)(UI)
 Redux - toolkit(state manegmanet)
 NodeJs
 Mongodb
 ExpressJs
 TailwindCss(for css)
-cloudinary(cloud storage for storing image and video)
+cloudinary(Cloud storage for storing image and video)
 
-How to run project:-----------------
+## How to run project:-----------------
 
-Frontend:-
-# Install packages
-You need to set backend url in .env
+## Frontend:-
+```sh
+npm install
+npm run dev
+```
 
 ------------------ .env for Frotend ------------------
 Backend_APP_API_URL="" // backend Url
@@ -33,4 +36,4 @@ cloud_name=
 api_key=
 api_secret=
 
-Install packages and setup the clodunary config
+
