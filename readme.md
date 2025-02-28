@@ -1,6 +1,6 @@
 # Project Name: - Role Based Event Management system 
 
-# Technology I Used: -
+## Technology I Used: -
 React(Vite)(UI)
 Redux - toolkit(state manegmanet)
 NodeJs
@@ -10,28 +10,25 @@ TailwindCss(for css)
 cloudinary(Cloud storage for storing image and video)
 JWT & AES
 
-##  ----------------- How to run project:-----------------
+### How to run project:
 
 Install All pakages
 
-## Frontend:-
+### Frontend:-
 npm install
+
 npm run dev
 
-## Backend :-
+### Backend :-
 npm install
+
 npm run dev
 
 SET UP ENV FILE FOR BACKEND AND FROTEND
-# .env for FROENTEND 
+## .env for FROENTEND 
 Backend_APP_API_URL="" // backend Url
 
-# .env for BACKEND 
-
-
-
-Backend:-
------------------- .env for Backend ------------------
+## .env for BACKEND 
 
 Backend_APP_API_URL=
 JWT_SECRET="" //For jwt
@@ -44,5 +41,7 @@ AES_IV=3a4f5b6c7d8e9f0a1b2c3d4e5f6a7b8c (it for Ecvrypt and decrpt data)
 cloud_name=
 api_key=
 api_secret=
+
+
 
 
