@@ -1,7 +1,6 @@
 # Project Name: - Role Based Event Management system 
 
 # Technology I Used: -
-
 React(Vite)(UI)
 Redux - toolkit(state manegmanet)
 NodeJs
@@ -9,17 +8,27 @@ Mongodb
 ExpressJs
 TailwindCss(for css)
 cloudinary(Cloud storage for storing image and video)
+JWT & AES
 
-## How to run project:-----------------
+##  ----------------- How to run project:-----------------
+
+Install All pakages
 
 ## Frontend:-
-```sh
 npm install
 npm run dev
-```
 
------------------- .env for Frotend ------------------
+## Backend :-
+npm install
+npm run dev
+
+SET UP ENV FILE FOR BACKEND AND FROTEND
+# .env for FROENTEND 
 Backend_APP_API_URL="" // backend Url
+
+# .env for BACKEND 
+
+
 
 Backend:-
 ------------------ .env for Backend ------------------
