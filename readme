@@ -1,6 +1,6 @@
-Project Name: - Event Management system
+# Project Name: - Event Management system
 
-Technology I Used: -
+# Technology I Used: -
 React(Vite)(UI)
 Redux - toolkit(state manegmanet)
 NodeJs
@@ -12,7 +12,7 @@ cloudinary(cloud storage for storing image and video)
 How to run project:-----------------
 
 Frontend:-
-Install packages
+# Install packages
 You need to set backend url in .env
 
 ------------------ .env for Frotend ------------------
