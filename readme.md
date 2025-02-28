@@ -29,9 +29,8 @@
 </p>
 
 
-![Screenshot 2023-08-23 170150](https://github.com/gurrudev/HopeHarbor/assets/80522156/7bd52ea1-ed6a-4109-86ec-30a1f24c5fc0) | ![Screenshot 2023-08-23 161604](https://github.com/gurrudev/HopeHarbor/assets/80522156/ae98695d-4325-4a39-a510-fb8227f7bf89) |
+![Screenshot 2025-02-28 010923](https://github.com/user-attachments/assets/f55a5658-d0fb-445f-9117-f6d4c3ac5ac3) | ![Screenshot 2025-02-28 013849](https://github.com/user-attachments/assets/94c0a403-5890-4ebe-ae32-6af928b8f2cc) |
 | :---: | :---: | 
-
 
 ## Contact
 
