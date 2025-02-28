@@ -21,7 +21,7 @@ router.post(
 );
 
 //TODO:- Get all events with pagination, search, and date filtering
-router.get("/", verifyUserToken, verifyAdmin, getAllEvents);
+router.get("/", verifyUserToken,  getAllEvents);
 
 //TODO:- Get a single event by ID
 router.get("/:id", verifyUserToken, verifyAdmin, getEventById);

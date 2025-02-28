@@ -25,8 +25,6 @@ import UserEdits from "./components/admin/pages/Users/UserEdits";
 // Not-found page
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
-import SingleEventDetails from "./components/admin/pages/SingleEventDetails";
-import EventSingleDetails from "./components/admin/pages/EventSingleDetails";
 
 const App = () => {
   return (

@@ -4,13 +4,12 @@ import cloudinary from "cloudinary";
 
 // Cloudinary configuration
 cloudinary.config({
-  cloud_name: "dt2zvo07s",
-  api_key: "963549411432585",
-  api_secret: "dCEpv6ooJ_WASF59skd87afNQ7k",
+  cloud_name: process.env.cloud_name,
+  api_key: process.env.api_key,
+  api_secret: process.env.api_secret,
 });
 
-// Secret key for AES encryption (should be stored securely, avoid hardcoding in production)
-const secretKey = process.env.SECRET_KEY || 'your-secure-key';
+const secretKey = process.env.SECRET_KEY || "your-secure-key";
 
 // AES Encrypt function
 const encryptData = (data) => {
@@ -36,7 +35,9 @@ export const createEvent = async (req, res) => {
     } = req.body;
 
     // Encrypt the eventLocation (if it exists)
-    const encryptedEventLocation = eventLocation ? encryptData(eventLocation) : null;
+    const encryptedEventLocation = eventLocation
+      ? encryptData(eventLocation)
+      : null;
 
     //? Check if file exists OR Not
     if (!req.file) {
@@ -59,7 +60,6 @@ export const createEvent = async (req, res) => {
         .end(req.file.buffer);
     });
 
-    // Create new event and set Cloudinary URL with encrypted eventLocation
     const newEvent = new Event({
       eventName,
       eventDate,
@@ -172,7 +172,9 @@ export const updateEvent = async (req, res) => {
     } = req.body;
 
     let eventFile = existingFile; // Use existing file by default
-    let eventLocationEncrypted = eventLocation ? encryptData(eventLocation) : null;
+    let eventLocationEncrypted = eventLocation
+      ? encryptData(eventLocation)
+      : null;
 
     if (req.file) {
       // Remove old file from Cloudinary only if it exists
@@ -260,4 +262,3 @@ export const deleteEvent = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
-  

@@ -1,25 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, NavLink } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Loading from "../components/Loading";
 import { eventApis } from "../helper/backend/backend";
 
 const EventDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate(); // Hook to handle navigation
+  const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const fetchEventDetails = async () => {
     try {
-      const response = await axios.get(
-        `${eventApis}/${id}`,
-        {
-          withCredentials: true,
-        }
-      );
-      // console.log(response.data.event);
+      const response = await axios.get(`${eventApis}/${id}`, {
+        withCredentials: true,
+      });
       setEvent(response.data.event);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch event details");
@@ -28,7 +24,6 @@ const EventDetails = () => {
     }
   };
 
-  // Fetching Single Event Details
   useEffect(() => {
     setTimeout(() => {
       fetchEventDetails();
@@ -43,7 +38,6 @@ const EventDetails = () => {
     );
   }
 
-  // Any Error
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -55,19 +49,18 @@ const EventDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center px-4 sm:px-8 py-12">
+    <div className="min-h-screen flex flex-col items-center px-4 sm:px-8 py-12">
       <div className="max-w-6xl w-full space-y-10">
-        <h1 className="text-5xl sm:text-6xl font-extrabold text-center text-gray-900 mb-8">
+        <h3 className="text-5xl sm:text-6xl font-extrabold text-center text-gray-900 mb-8">
           {event.eventName}
-        </h1>
+        </h3>
 
-        {/* Main Content here */}
         <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-300">
           <div className="grid lg:grid-cols-2 gap-6 p-8">
             <div className="relative">
               {event.eventType === "image" ? (
                 <img
-                  src={`${event.eventFile}`}
+                  src={event.eventFile}
                   alt={event.eventName}
                   className="w-full h-96 object-cover rounded-lg shadow-lg"
                 />
@@ -78,7 +71,7 @@ const EventDetails = () => {
                     muted
                     className="w-full h-full rounded-lg shadow-lg"
                   >
-                    <source src={`/${event.eventFile}`} type="video/mp4" />
+                    <source src={event.eventFile} type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
                 </div>
@@ -117,10 +110,9 @@ const EventDetails = () => {
           </div>
         </div>
 
-        {/* Go to previous page */}
         <div className="text-center mt-8">
           <button
-            onClick={() => navigate(-1)} // Navigate back to previous page
+            onClick={() => navigate(-1)}
             className="px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition duration-300 transform hover:scale-105"
           >
             Go Back

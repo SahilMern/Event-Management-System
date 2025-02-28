@@ -48,8 +48,8 @@ const Login = () => {
   }, [user, navigate]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-10 rounded-lg shadow-lg max-w-sm w-full">
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="bg-white p-10 rounded-lg shadow-2xl border-gray-400 max-w-sm w-full">
         <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">
           Login
         </h2>

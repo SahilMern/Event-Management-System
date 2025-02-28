@@ -92,9 +92,9 @@ const Event = () => {
     <>
 
     <div className="min-h-[80vh] p-4 sm:p-8 bg-gray-50 flex flex-col">
-      <h1 className="text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-8 text-gray-800">
-        Featured Events
-      </h1>
+      {/* <h1 className="text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-8 text-gray-800">
+        Admin Evnts
+      </h1> */}
 
       {/* Search Functionality */}
       <form className="mb-6 sm:mb-8 w-full mx-auto">

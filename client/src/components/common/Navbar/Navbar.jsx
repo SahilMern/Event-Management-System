@@ -34,7 +34,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md w-full z-10 top-0 left-0">
+    <nav className="bg-white  w-full z-10 top-0 left-0">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-2">
@@ -45,7 +45,8 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8 items-center">
+          {
+            user &&    <div className="hidden md:flex space-x-8 items-center">
             <Link
               to="/"
               className="text-gray-800 hover:text-blue-600 transition duration-300 text-lg uppercase font-medium"
@@ -67,6 +68,8 @@ const Navbar = () => {
               Contact Us
             </Link>
           </div>
+          }
+       
 
           {/* User Actions (Visible on md and larger screens) */}
           <div className="hidden md:flex items-center space-x-6">
@@ -93,7 +96,7 @@ const Navbar = () => {
               <>
                 <Link
                   to="/login"
-                  className="inline-block px-5 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition duration-300 text-lg font-medium"
+                  className="inline-block px-5 py-2   rounded-lg text-black transition duration-300 text-lg font-medium hover:underline hover:text-blue-400"
                 >
                   Login
                 </Link>
