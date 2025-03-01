@@ -3,9 +3,10 @@ import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = ({ roles }) => {
   const { user } = useSelector((state) => state.auth);
-  console.log(user, "Details About User in Protected Routes");
+  // console.log(user, "Details About User in Protected Routes");
 
   //! Redirect To login page i user not founded in state
+  
   if (!user) {
     return <Navigate to="/login" />;
   }
