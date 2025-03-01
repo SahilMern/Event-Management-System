@@ -25,6 +25,7 @@ import UserEdits from "./components/admin/pages/Users/UserEdits";
 // Not-found page
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
+import Filteration from "./components/Filteration/Filteration";
 
 const App = () => {
   return (
@@ -38,6 +39,9 @@ const App = () => {
           <Route path="/eventDetails/:id" element={<EventDetails />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+
+          <Route path="/filteration" element={<Filteration />} />
+
 
 
           <Route path="/about" element={<About />} />
